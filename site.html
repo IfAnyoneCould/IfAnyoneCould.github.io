@@ -54,18 +54,30 @@ body.dragging #scene,body.dragging{cursor:grabbing}
 .proj .tt{display:block;font-family:var(--serif);font-size:clamp(1.3rem,1.3vw + .6rem,2rem);line-height:1.1;letter-spacing:-.01em;font-weight:400}
 .proj.tool .tt{font-family:var(--sans);font-size:1rem;font-weight:600;letter-spacing:0}
 .proj .mt{display:block;margin-top:5px;font-size:.8125rem;opacity:.75}
-.proj .ex{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows .6s var(--ease),opacity .4s ease}
-.proj .ex>div{overflow:hidden;max-width:36ch}
-.proj .ex p{margin:12px 0 0;font-size:.9375rem;line-height:1.52}
-.proj .ex a{display:inline-block;margin-top:10px;font-size:.9375rem;font-weight:600;text-underline-offset:4px;text-decoration-thickness:1px}
-.proj.open .ex{grid-template-rows:1fr;opacity:1}
+.proj .tt::after{content:"\2193";display:inline-block;margin-left:.3em;opacity:0;transform:translateY(-.35em);transition:opacity .35s ease,transform .5s var(--ease)}
+.proj:hover .tt::after,.proj .lb:focus-visible .tt::after{opacity:.8;transform:none}
+.proj .ex{display:none}
 
 /* contact */
-.contact .mail{font-family:var(--serif);font-weight:300;font-size:clamp(1.9rem,5.4vw,5.4rem);line-height:1;letter-spacing:-.02em;white-space:nowrap}
-.contact .mail:hover{font-style:italic}
+.contact .mail{font-family:var(--serif);font-weight:300;font-size:clamp(1.9rem,5.4vw,5.4rem);line-height:1;letter-spacing:-.02em;white-space:nowrap;
+  display:inline-block;transform-origin:0 100%;transition:transform .7s var(--ease),font-weight .7s var(--ease)}
+.contact .mail:hover{transform:skewX(-10deg);font-weight:400}
 .contact .row{display:flex;flex-wrap:wrap;gap:8px 24px;margin-top:20px;font-size:.9375rem;font-weight:500}
 .contact .row a{text-underline-offset:4px;text-decoration-thickness:1px}
 .contact .st{display:block;margin-top:12px;font-size:.8125rem;opacity:.75;min-height:1.2em}
+
+/* down in the rockies */
+#deep{position:fixed;inset:0;pointer-events:none;color:var(--ink);text-shadow:0 0 22px var(--halo),0 0 6px var(--halo);transition:color 1.2s ease;will-change:transform;transform:translate3d(0,100vh,0)}
+#deep .back,#deep .dp{pointer-events:auto}
+#deep .back{position:absolute;top:var(--pad);left:var(--pad);display:flex;align-items:center;gap:10px;font-family:var(--serif);font-size:1.25rem}
+#deep .back svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;transition:transform .5s var(--ease)}
+#deep .back:hover svg{transform:translateY(-3px)}
+#deep .dp{position:absolute;left:calc(var(--pad)*2.2);top:clamp(84px,17vh,19vh);max-width:52ch;max-height:calc(100% - clamp(84px,17vh,19vh) - 24px);overflow:auto;scrollbar-width:none}
+#deep h2{margin:0;font-family:var(--serif);font-weight:300;font-size:clamp(2.2rem,min(5vw,8.5vh),5rem);line-height:.98;letter-spacing:-.02em;font-variation-settings:"opsz" 72}
+#deep .dm{margin:14px 0 0;font-size:.875rem;opacity:.75}
+#deep .dx p{margin:14px 0 0;font-size:1.0625rem;line-height:1.55}
+#deep .dx a{display:inline-block;margin-top:16px;font-size:.9375rem;font-weight:600;text-underline-offset:4px;text-decoration-thickness:1px}
+body.deep #scene{cursor:default}
 
 /* corner */
 .corner{position:fixed;top:var(--pad);right:var(--pad);display:flex;gap:22px;font-size:.875rem;font-weight:500;color:var(--ink);text-shadow:0 0 16px var(--halo);transition:color 1.2s ease;z-index:3}
@@ -94,12 +106,13 @@ body.dragging #scene,body.dragging{cursor:grabbing}
 
 @media (max-width:760px){
   .frag{max-width:22ch}
-  .frag.small,.proj .ex>div{max-width:min(30ch,74vw)}
+  .frag.small{max-width:min(30ch,74vw)}
+  #deep .dp{left:var(--pad);right:var(--pad);top:14vh}
   .contact .mail{font-size:clamp(1.5rem,7.2vw,2.4rem)}
   .corner{gap:16px;font-size:.8125rem}
   .home{font-size:1.05rem}
 }
-@media (prefers-reduced-motion:reduce){ .proj .ex,.name h1 span{transition-duration:.01s} }
+@media (prefers-reduced-motion:reduce){ .name h1 span,.contact .mail{transition-duration:.01s} }
 </style>
 </head>
 <body>
@@ -123,13 +136,14 @@ body.dragging #scene,body.dragging{cursor:grabbing}
     <p class="hint">Scroll, drag, or use the arrow keys to walk east. The sun follows your cursor.</p>
   </div>
 
-  <p class="it frag" data-x=".5" data-sy=".09">I like work that goes all the way down: the board, the firmware on it, and the software that tells it what to do.</p>
+  <p class="it frag" data-x=".5" data-sy=".09">I make things, some of them work.</p>
 
   <div class="it proj" id="p-evo" data-x=".8" data-sy=".3" data-layer="3">
-    <button class="lb" type="button" aria-expanded="false"><span class="tt">Evolution Engine</span><span class="mt">Go, in progress</span></button>
+    <button class="lb" type="button"><span class="tt">Evolution Engine</span><span class="mt">Go, in progress</span></button>
     <div class="ex"><div>
-      <p>Hand it any simulation binary and a config, and it evolves the inputs. Population, selection, mutation and parallel evaluation are handled for you, whatever language the simulation is written in.</p>
-      <p>Go worker pools talk to persistent processes, which took a generation from about 900 ms to under a millisecond. Benchmarked on 8-dimensional Rastrigin. The core is moving to Rust.</p>
+      <p>Point it at any simulation that takes some parameters and gives back a score, in whatever language, and it finds the parameters that score best. Right now it runs a genetic algorithm or CMA-ES.</p>
+      <p>The point is that it's easy to use. All you give it is the program and the range for each parameter, everything else has a tuned default. The goal is someone running their own sim without me there to help.</p>
+      <p>Where it's going: one binary with a local web UI, where you drop in a sim, set it up without touching json, and watch it evolve live. Then Bayesian optimization for sims too expensive to run thousands of times, picking the optimizer for you, and workers on other machines or a cluster.</p>
       <a href="https://github.com/IfAnyoneCould/Evolution_Engine" target="_blank" rel="noopener">Source on GitHub</a>
     </div></div>
   </div>
@@ -137,7 +151,7 @@ body.dragging #scene,body.dragging{cursor:grabbing}
   <p class="it frag" data-x="1.28" data-sy=".1">Most of my projects start with something that annoys me.</p>
 
   <div class="it proj tool" data-x="1.5" data-sy=".34" data-layer="4">
-    <button class="lb" type="button" aria-expanded="false"><span class="tt">canvas-achieve-sync</span><span class="mt">A small tool</span></button>
+    <button class="lb" type="button"><span class="tt">canvas-achieve-sync</span><span class="mt">A small tool</span></button>
     <div class="ex"><div>
       <p>Pulls Canvas assignments, Achieve textbook work and the Northeastern calendar into one Google Tasks list.</p>
       <a href="https://github.com/IfAnyoneCould/canvas-achieve-sync" target="_blank" rel="noopener">Source on GitHub</a>
@@ -145,7 +159,7 @@ body.dragging #scene,body.dragging{cursor:grabbing}
   </div>
 
   <div class="it proj" data-x="1.78" data-sy=".2" data-layer="3">
-    <button class="lb" type="button" aria-expanded="false"><span class="tt">2D game engine</span><span class="mt">C++, SDL2, OpenGL</span></button>
+    <button class="lb" type="button"><span class="tt">2D game engine</span><span class="mt">C++, SDL2, OpenGL</span></button>
     <div class="ex"><div>
       <p>An engine written from scratch, with a fixed 240 Hz physics step.</p>
       <a href="https://github.com/IfAnyoneCould/cpp-game-engine" target="_blank" rel="noopener">Source on GitHub</a>
@@ -155,18 +169,18 @@ body.dragging #scene,body.dragging{cursor:grabbing}
   <p class="it frag small" data-x="2.02" data-sy=".08">Congressional Award Gold Medal. National Merit Scholar.</p>
 
   <div class="it proj tool" data-x="2.22" data-sy=".34" data-layer="4">
-    <button class="lb" type="button" aria-expanded="false"><span class="tt">neu-clubs</span><span class="mt">A small tool</span></button>
+    <button class="lb" type="button"><span class="tt">neu-clubs</span><span class="mt">A small tool</span></button>
     <div class="ex"><div>
       <p>All 933 Northeastern student groups scraped into one searchable table.</p>
       <a href="https://github.com/IfAnyoneCould/neu-clubs" target="_blank" rel="noopener">Source on GitHub</a>
     </div></div>
   </div>
 
-  <p class="it frag small" id="about-a" data-x="2.42" data-sy=".12"><b>Now</b> studying for a B.S. in Electrical and Computer Engineering at Northeastern, 2026 to 2031.</p>
+  <p class="it frag small" id="about-a" data-x="2.42" data-sy=".12"><b>Now</b> studying for a B.S. in Electrical and Computer Engineering at Northeastern, 2026 to 2030.</p>
   <p class="it frag small" data-x="2.72" data-sy=".08"><b>Before that</b> I was an engineering intern at Yale Cordage, a job that came out of a year of asking their engineers questions through robotics. A.S. from Salt Lake Community College.</p>
 
   <div class="it proj" data-x="2.98" data-sy=".24" data-layer="4">
-    <button class="lb" type="button" aria-expanded="false"><span class="tt">Hive 3747</span><span class="mt">FIRST Tech Challenge, lead designer</span></button>
+    <button class="lb" type="button"><span class="tt">Hive 3747</span><span class="mt">FIRST Tech Challenge, lead designer</span></button>
     <div class="ex"><div>
       <p>Three seasons as lead designer, with thousands of hours in CAD across nearly every mechanism on the robot.</p>
       <p>Qualified for the World Championship all three years, and won back-to-back Utah State Inspire Awards.</p>
@@ -174,17 +188,33 @@ body.dragging #scene,body.dragging{cursor:grabbing}
   </div>
 
   <div class="it proj tool" data-x="3.3" data-sy=".34" data-layer="3">
-    <button class="lb" type="button" aria-expanded="false"><span class="tt">downloads-janitor</span><span class="mt">A small tool</span></button>
+    <button class="lb" type="button"><span class="tt">downloads-janitor</span><span class="mt">A small tool</span></button>
     <div class="ex"><div>
       <p>Archives old downloads automatically and keeps a ledger so any move can be undone.</p>
       <a href="https://github.com/IfAnyoneCould/downloads-janitor" target="_blank" rel="noopener">Source on GitHub</a>
     </div></div>
   </div>
 
-  <p class="it frag" data-x="3.55" data-sy=".1">Away from a bench I'm reading, mostly philosophy, or somewhere out here.</p>
-  <p class="it frag small" data-x="3.9" data-sy=".16">Learning Rust. Otherwise reaching for C, C++, Go and Python, an STM32, Fusion 360, a 3D printer and a laser cutter.</p>
+  <div class="it proj tool" data-x="3.6" data-sy=".34" data-layer="4">
+    <button class="lb" type="button"><span class="tt">cli-sync</span><span class="mt">A small tool</span></button>
+    <div class="ex"><div>
+      <p>Keeps my WSL command line setup matched to Windows. Links the configs, pins every tool to the version scoop has, and restores nvim plugins, so nothing gets set up twice.</p>
+      <a href="https://github.com/IfAnyoneCould/cli-sync" target="_blank" rel="noopener">Source on GitHub</a>
+    </div></div>
+  </div>
 
-  <div class="it contact" id="contact" data-x="4.3" data-sy=".15">
+  <p class="it frag" data-x="3.85" data-sy=".1">Away from a bench I'm reading, mostly philosophy, or somewhere out here.</p>
+  <div class="it proj" data-x="4.12" data-sy=".24" data-layer="3">
+    <button class="lb" type="button"><span class="tt">Verilog practices</span><span class="mt">SystemVerilog, in progress</span></button>
+    <div class="ex"><div>
+      <p>Working toward chip design one project at a time, each harder than the last. First up is a 4-bit ALU with seven instructions and its testbench.</p>
+      <a href="https://github.com/IfAnyoneCould/verilog_practices" target="_blank" rel="noopener">Source on GitHub</a>
+    </div></div>
+  </div>
+
+  <p class="it frag small" data-x="4.45" data-sy=".16">Learning Rust and Verilog. Otherwise reaching for C, C++, Go and Python, an STM32, Fusion 360, a 3D printer and a laser cutter.</p>
+
+  <div class="it contact" id="contact" data-x="4.85" data-sy=".15">
     <button class="mail" id="mail" type="button" data-addr="jonahwood1408@gmail.com" aria-describedby="cst">jonahwood1408@gmail.com</button>
     <span class="st" id="cst" role="status">Click the address to copy it.</span>
     <div class="row">
@@ -195,9 +225,14 @@ body.dragging #scene,body.dragging{cursor:grabbing}
   </div>
 </div>
 
+<section id="deep" aria-label="Project" inert>
+  <button class="back" id="back" type="button"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 12.5V1.8M2.2 6.4L7 1.5l4.8 4.9"/></svg>Back to the desert</button>
+  <div class="dp"><h2 id="dt"></h2><p class="dm" id="dm"></p><div class="dx" id="dx"></div></div>
+</section>
+
 <script>
 (function(){
-const cv = document.getElementById("scene"), ctx = cv.getContext("2d");
+const cv = document.getElementById("scene"); let ctx = cv.getContext("2d");
 const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 let W=0, H=0, D=1, mob=false, CS=1;
 let CAMMAX = 4.22; const JX = {work:.52, about:2.3, contact:4.22}, JUMP = {};
@@ -377,10 +412,10 @@ function R(a,b){ return a + rnd()*(b-a); }
 let layers = [];
 function bakeAll(){ layers = LAYERS.map(buildLayer); }
 
-function layerPal(L, S){
+function layerPal(L, S, pal = PALRGB){
   const o = {rgb:{}};
-  for (const k of PALK){
-    let c = PALRGB[k];
+  for (const k in pal){
+    let c = pal[k];
     c = mix(c, [255,150,90], S.warm*.1);
     c = mix(c, S.hor, L.haze);
     c = mix(c, S.tint, S.ta);
@@ -390,11 +425,7 @@ function layerPal(L, S){
   return o;
 }
 function poly(pts, ox, base){ ctx.beginPath(); ctx.moveTo(pts[0][0] + ox, base + pts[0][1]); for (let i=1;i<pts.length;i++) ctx.lineTo(pts[i][0] + ox, base + pts[i][1]); ctx.closePath(); }
-function drawShape(b, ox, base, L, T, sc){
-  poly(b.out, ox, base);
-  ctx.fillStyle = T(0); ctx.fill();
-  if (L.detail === 0) return;
-  ctx.save(); ctx.clip();
+function faces(b, ox, base, T){
   const n = b.normals.length, far = 4000;
   for (let i=0;i<n;i++){
     const A = i === 0 ? [[b.x0 - far, -b.h - 100], [b.x0 - far, 20]] : b.bounds[i-1];
@@ -405,6 +436,13 @@ function drawShape(b, ox, base, L, T, sc){
     for (let k=B.length-1;k>=0;k--) ctx.lineTo(B[k][0] + ox, base + B[k][1]);
     ctx.closePath(); ctx.fillStyle = T(b.normals[i]); ctx.fill();
   }
+}
+function drawShape(b, ox, base, L, T, sc){
+  poly(b.out, ox, base);
+  ctx.fillStyle = T(0); ctx.fill();
+  if (L.detail === 0) return;
+  ctx.save(); ctx.clip();
+  faces(b, ox, base, T);
   if (L.detail >= 2){
     ctx.lineWidth = 1.5*sc; ctx.strokeStyle = T(-1, -.3); ctx.globalAlpha = .55;
     for (const pts of b.ledges){ ctx.beginPath(); pts.forEach(([x,y],k) => k ? ctx.lineTo(x + ox, base + y) : ctx.moveTo(x + ox, base + y)); ctx.stroke(); }
@@ -416,23 +454,180 @@ function drawShape(b, ox, base, L, T, sc){
   }
   ctx.restore();
 }
-function drawLayer(LL, S, e, sunX, lx){
-  const L = LL.L, ox = -cam*L.f*W + par*L.f, base = LL.base, P = layerPal(L, S), sc = LL.sc;
-  const ramp = [P.rgb.deep, P.rgb.shadow, P.rgb.mid, P.rgb.lit2, P.rgb.lit];
+function shader(ramp, S, e, lx){
   const lightK = Math.max(.35*S.dark, cl(e*4 + .45)*(1 - S.dark*.6)), frontK = cl(e*1.8);
-  const T = (nx, off = 0) => {
+  return (nx, off = 0) => {
     const b = cl(.4 + .52*nx*lx*lightK + .2*(1 - Math.abs(nx))*frontK - (1 - lightK)*.12 + off);
     const f = b*3.999, i = f|0, t = f - i; return css(mix(ramp[i], ramp[i+1], t));
   };
-  const s = lx >= 0 ? 1 : -1;
-  ctx.fillStyle = P.floor;
+}
+function floor(col, base, ox, L, hill = 0){
+  ctx.fillStyle = col;
   ctx.beginPath(); ctx.moveTo(0, H);
-  for (let x=0; x<=W+10; x+=10) ctx.lineTo(x, base - 1 + Math.sin((x - ox)*.012 + L.f*40)*(L.ground ? 7 : 1.5) + (L.ground ? Math.sin((x - ox)*.004)*9 : 0));
+  for (let x=0; x<=W+10; x+=10) ctx.lineTo(x, base - 1 + Math.sin((x - ox)*.012 + L.f*40)*(L.ground ? 7 : 1.5) + (L.ground ? Math.sin((x - ox)*.004)*9 : 0) - hill*n1((x - ox)*.005 + L.f*90));
   ctx.lineTo(W, H); ctx.closePath(); ctx.fill();
+}
+function drawLayer(LL, S, e, lx){
+  const L = LL.L, ox = -cam*L.f*W + par*L.f, base = LL.base, P = layerPal(L, S), sc = LL.sc;
+  const T = shader([P.rgb.deep, P.rgb.shadow, P.rgb.mid, P.rgb.lit2, P.rgb.lit], S, e, lx);
+  floor(P.floor, base, ox, L);
   for (const fm of LL.forms){
     if (fm.x1 + fm.ext + ox < -20 || fm.x - fm.ext + ox > W + 20) continue;
     for (const b of fm.blocks) drawShape(b, ox, base, L, T, sc);
     if (fm.ped) drawShape(fm.ped, ox, base, L, T, sc);
+  }
+}
+
+/* ---------- the rockies: down the page, where each project lives ---------- */
+const MPAL = {r0:"#29283F", r1:"#434360", r2:"#6B6A85", r3:"#9D97A6", r4:"#CDC2BA",
+  s0:"#5A6792", s1:"#8995BC", s2:"#BCC6DF", s3:"#E3E7F0", s4:"#FBF7F0",
+  t0:"#0F1E19", t1:"#17301F", t2:"#234427", t3:"#315A30", t4:"#43703D", floor:"#1C3322", meadow:"#3F5E36"};
+const MPALRGB = {}; for (const k in MPAL) MPALRGB[k] = hx(MPAL[k]);
+const rampOf = (P, c) => [0,1,2,3,4].map(i => P.rgb[c + i]);
+const MLAYERS = [
+  {f:.03, base:.6,  hmin:.08, hmax:.32, haze:.7,  detail:1, snowH:.15},
+  {f:.08, base:.67, hmin:.07, hmax:.29, haze:.5,  detail:2, snowH:.145},
+  {f:.16, base:.76, hmin:.05, hmax:.25, haze:.3,  detail:2, snowH:.18, trees:1.4, tree:7,  treeline:.08},
+  {f:.27, base:.86, hmin:.03, hmax:.17, haze:.14, detail:3, snowH:.14, trees:2,   tree:12, treeline:.1},
+  {f:.42, base:.95, haze:.03, forest:true, trees:2.4, tree:26, treeline:.04},
+  {f:.6,  base:.985, ground:true, haze:0}
+];
+// one continuous ridge per range: folded noise gives sharp crests and rounder saddles
+function ridgeline(L, seed, sc){
+  const k = 1/(H*.36), o = seed*37.1 + L.f*113, pts = [];
+  const rg = t => { const v = 1 - Math.abs(2*n1(t) - 1); return v*v; };
+  for (let x = -40; x <= W + 80; x += R(2,4)*sc){
+    const t = x*k + o;
+    const v = (.38*rg(t) + .36*rg(t*2.13 + 5.2) + .18*rg(t*4.4 + 9.7) + .08*n1(t*9.1 + 3.3))*(.55 + .45*n1(t*.33 + 1.7));
+    // lower on the left, so the words have sky
+    const lo = mob ? .85 : .55 + .45*ss(0, .65, x/W);
+    pts.push([x, -H*(L.hmin + (L.hmax - L.hmin)*v)*lo + R(-1,1)*H*.002]);
+  }
+  return pts;
+}
+function makeRange(pts, L, sc){
+  // summits and saddles, ignoring anything without real prominence
+  const prom = H*.035, ex = []; let up = true, c = 0;
+  for (let i=1;i<pts.length;i++){
+    const y = pts[i][1];
+    if (up){ if (y < pts[c][1]) c = i; else if (y > pts[c][1] + prom){ ex.push(c); up = false; c = i; } }
+    else { if (y > pts[c][1]) c = i; else if (y < pts[c][1] - prom){ ex.push(c); up = true; c = i; } }
+  }
+  // each face lit by the slope it actually has. a summit shows a front face between two spurs,
+  // a saddle drops a single gully, and long faces get a gully of their own
+  const nrm = (a, b) => { const sl = (pts[b][1] - pts[a][1])/Math.max(1, pts[b][0] - pts[a][0]); return (sl < 0 ? -1 : 1)*(.25 + .6*Math.min(1, Math.abs(sl)*1.5)); };
+  const E = [0, ...ex, pts.length - 1], bounds = [], normals = [], gullies = [];
+  for (let j=0;j<E.length-1;j++){
+    const a = E[j], b = E[j+1], n = nrm(a, b), seg = pts[b][0] - pts[a][0];
+    if (j === 0) normals.push(n);
+    if (seg > 90*sc && b - a > 4){
+      const g = a + ((b - a)*R(.48,.55)|0), gx = pts[g][0];
+      bounds.push(crease(gx, gx + R(-.04,.04)*seg, -pts[g][1], sc)); normals.push(cl(n + R(-.25,.25), -1, 1)); gullies.push(gx);
+    }
+    if (j === E.length - 2) break;
+    const x = pts[b][0], hb = -pts[b][1], c = E[j+2], seg2 = pts[c][0] - x, nNext = nrm(b, c);
+    if (pts[b][1] < pts[a][1] && pts[b][1] < pts[c][1]){
+      bounds.push(crease(x, x - R(.18,.35)*seg, hb, sc)); normals.push(R(-.2,.2));
+      bounds.push(crease(x, x + R(.18,.35)*seg2, hb, sc)); normals.push(nNext);
+    } else { bounds.push(crease(x, x + R(-.06,.06)*Math.min(seg, seg2), hb, sc)); normals.push(nNext); gullies.push(x); }
+  }
+  const h = -Math.min(...pts.map(q => q[1]));
+  let sn = null;
+  if (L.snowH){
+    // a ragged snowline, with streaks down the gullies where it lasts longest
+    const sy = -H*L.snowH, o = L.f*211, line = x => sy + H*.03*(2*n1(x/(H*.1) + o) - 1) + H*.01*(2*n1(x/(H*.025) + o*2) - 1);
+    const q = [];
+    for (let x = -40; x <= W + 80; x += R(4,8)*sc) q.push([x, line(x)]);
+    for (const gx of gullies){ const w = R(2,5)*sc; q.push([gx - w, line(gx - w)], [gx + R(-1,1)*sc, line(gx) + H*R(.02,.07)], [gx + w, line(gx + w)]); }
+    q.sort((a,b) => a[0] - b[0]);
+    sn = [[-60, -H], ...q, [W + 100, sy], [W + 100, -H]];
+  }
+  return {x0:-40, x1:W + 80, h, out:[[-40, 0], ...pts, [W + 80, 0]], bounds, normals, ledges:[], fracs:[], snow:sn};
+}
+function buildRange(L, seed){
+  const sc = Math.max(.7, Math.min(1.4, H/860)), base = L.base*H;
+  seedR(seed*7919 + Math.round(L.f*1000) + 3);
+  const peaks = [], trees = [], tl = H*(L.treeline || 0);
+  // a ragged top edge for the timber, so rock between the trees still reads as forest
+  const tk = x => L.forest ? .45 + 1.1*n1(x*.006 + seed*13.1) : 1;
+  const timber = (a, b, lo, hi) => { const pts = [[a - 10, 20]]; for (let x = a; x <= b; x += R(6,14)*sc) pts.push([x, -tl*tk(x)*R(lo, hi)]); pts.push([b + 10, -tl*lo], [b + 10, 20]); return pts; };
+  if (!L.ground && !L.forest){
+    const rg = makeRange(ridgeline(L, seed, sc), L, sc);
+    if (L.trees) rg.wood = timber(rg.x0, rg.x1, .55, 1.1);
+    peaks.push(rg);
+  }
+  if (L.trees){
+    const lw = Math.ceil(W + 120), sky = new Float32Array(lw).fill(0);
+    for (const pk of peaks) for (let i=1;i<pk.out.length;i++){
+      const [ax, ay] = pk.out[i-1], [bx, by] = pk.out[i]; if (bx <= ax) continue;
+      for (let xx = Math.ceil(ax); xx <= bx; xx++){ const j = xx + 40; if (j >= 0 && j < lw) sky[j] = Math.min(sky[j], ay + (by - ay)*(xx - ax)/(bx - ax)); }
+    }
+    for (let x = -20; x < W + 20; x += R(2.5,6)*sc/L.trees){
+      const climb = L.forest ? tl*tk(x) : Math.min(-sky[cl(Math.round(x) + 40, 0, lw-1)], tl);
+      trees.push([x, -climb*Math.pow(rnd(), 1.2), L.tree*sc*R(.55,1.45), R(.8,1.2)]);
+    }
+    trees.sort((a,b) => a[1] - b[1]);
+  }
+  return {L, base, sc, peaks, trees, band: L.forest ? timber(-40, W + 40, .35, .65) : null};
+}
+let rockies = [], rockSeed = -1;
+function bakeRockies(seed){ rockSeed = seed; rockies = MLAYERS.map(L => buildRange(L, seed)); rcU = null; }
+
+// the rockies hold still, so they're painted once and only repainted, a few ranges a frame, when the light moves
+const rc = [document.createElement("canvas"), document.createElement("canvas")];
+let rcU = null, rcJob = null, rcFade = 1;
+function light(u){ const e = Math.sin(Math.PI*(u*1.2 - .1)); return {u, e, S:sky(e), lx:cl((u - .5)*2.4, -1, 1)}; }
+function rcClear(c){ c.width = W*D; c.height = H*D; const g = c.getContext("2d"); g.setTransform(D,0,0,D,0,0); return g; }
+function paintRange(g, LL, Lt){ const m = ctx; ctx = g; try { drawRange(LL, Lt.S, Lt.e, Lt.lx); } finally { ctx = m; } }
+function paintRockies(){ const g = rcClear(rc[0]), Lt = light(u); for (const LL of rockies) paintRange(g, LL, Lt); rcU = u; rcJob = null; rcFade = 1; }
+function drawRockies(dt){
+  if (rcU === null) paintRockies();
+  if (!rcJob && rcFade >= 1 && Math.abs(u - rcU) > .008) rcJob = {Lt:light(u), i:0, g:rcClear(rc[1])};
+  if (rcJob){
+    const t0 = performance.now();
+    do paintRange(rcJob.g, rockies[rcJob.i++], rcJob.Lt); while (rcJob.i < rockies.length && performance.now() - t0 < 5);
+    if (rcJob.i >= rockies.length){ rc.reverse(); rcU = rcJob.Lt.u; rcJob = null; rcFade = 0; }
+  }
+  // cross-fade from the old light to the new
+  rcFade = Math.min(1, rcFade + dt/140);
+  if (rcFade < 1) ctx.drawImage(rc[1], 0, 0, W, H);
+  ctx.globalAlpha = rcFade; ctx.drawImage(rc[0], 0, 0, W, H); ctx.globalAlpha = 1;
+}
+function drawSnow(b, ox, base, T){
+  if (!b.snow) return;
+  ctx.save(); poly(b.out, ox, base); ctx.clip(); poly(b.snow, ox, base); ctx.clip();
+  faces(b, ox, base, T);
+  ctx.restore();
+}
+function drawTrees(LL, ox, base, T){
+  const lit = [T(-.8), T(.8)], tr = LL.trees;
+  // a few dozen at a time, back to front, so the forest still overlaps itself
+  for (let c=0;c<tr.length;c+=24) for (let si=0;si<2;si++){
+    const side = si ? 1 : -1; ctx.beginPath();
+    for (let i=c;i<Math.min(tr.length, c + 24);i++){
+      const [x, y, s, wk] = tr[i], X = x + ox, Y = base + y, w = s*.32*wk*side;
+      ctx.moveTo(X, Y - s); ctx.lineTo(X + w*.42, Y - s*.62); ctx.lineTo(X + w*.26, Y - s*.6); ctx.lineTo(X + w*.72, Y - s*.3);
+      ctx.lineTo(X + w*.5, Y - s*.28); ctx.lineTo(X + w, Y); ctx.lineTo(X, Y); ctx.closePath();
+    }
+    ctx.fillStyle = lit[si]; ctx.fill();
+  }
+}
+function drawRange(LL, S, e, lx){
+  const L = LL.L, ox = 0, base = LL.base, P = layerPal(L, S, MPALRGB), sc = LL.sc;
+  const rock = shader(rampOf(P, "r"), S, e, lx), snow = shader(rampOf(P, "s"), S, e, lx), tree = shader(rampOf(P, "t"), S, e, lx), wood = tree(-.5);
+  // foothills under the peaks, coloured like their lower slopes so they don't read as terraces
+  floor(L.ground ? P.meadow : L.forest ? P.floor : L.trees ? wood : rock(-.15), base, ox, L, L.ground || L.forest ? 0 : H*.025);
+  if (LL.band){ poly(LL.band, ox, base); ctx.fillStyle = wood; ctx.fill(); }
+  for (const pk of LL.peaks){
+    drawShape(pk, ox, base, L, rock, sc); drawSnow(pk, ox, base, snow);
+    if (pk.wood){ ctx.save(); poly(pk.out, ox, base); ctx.clip(); poly(pk.wood, ox, base); ctx.fillStyle = wood; ctx.fill(); ctx.restore(); }
+  }
+  if (LL.trees.length) drawTrees(LL, ox, base, tree);
+  // haze pooling in the valley at the foot of each range, carried on down over its foothills
+  for (const pk of LL.peaks){
+    const g = ctx.createLinearGradient(0, base - pk.h*.7, 0, base);
+    g.addColorStop(0, css(S.hor, 0)); g.addColorStop(1, css(S.hor, .55));
+    ctx.save(); poly([[-40, H], ...pk.out.slice(1, -1), [W + 80, H]], ox, base); ctx.clip(); ctx.fillStyle = g; ctx.fillRect(-50, base - pk.h - 10, W + 150, H); ctx.restore();
   }
 }
 
@@ -463,23 +658,37 @@ let grainPat = null;
 /* ---------- items ---------- */
 const items = [...document.querySelectorAll(".it")].map(el => ({
   el, X:+el.dataset.x, sy:+el.dataset.sy,
-  layer: el.dataset.layer ? +el.dataset.layer : -1, h:0, lbh:0, x:0, y:0, open:false, heat:0, proj: el.classList.contains("proj")
+  layer: el.dataset.layer ? +el.dataset.layer : -1, lbh:0, x:0, y:0, heat:0, proj: el.classList.contains("proj")
 }));
-const ro = new ResizeObserver(es => es.forEach(e => { const it = items.find(i => i.el === e.target); if (it){ it.h = it.el.offsetHeight; const lb = it.el.querySelector(".lb"); it.lbh = lb ? lb.offsetHeight : 0; } }));
+const ro = new ResizeObserver(es => es.forEach(e => { const it = items.find(i => i.el === e.target); if (it){ const lb = it.el.querySelector(".lb"); it.lbh = lb ? lb.offsetHeight : 0; } }));
 items.forEach(it => ro.observe(it.el));
 
-function setOpen(it, v){
-  it.open = v; it.el.classList.toggle("open", v);
-  const b = it.el.querySelector(".lb"); if (b) b.setAttribute("aria-expanded", v ? "true" : "false");
-}
-items.filter(i => i.proj).forEach(it => {
-  const b = it.el.querySelector(".lb");
-  let pinned = false;
-  b.addEventListener("click", () => { if (dragMoved) return; pinned = !pinned || !it.open; setOpen(it, pinned); });
-  it.el.addEventListener("mouseenter", () => { hot = it; if (matchMedia("(hover:hover)").matches) setOpen(it, true); });
-  it.el.addEventListener("mouseleave", () => { if (hot === it) hot = null; if (!pinned && matchMedia("(hover:hover)").matches) setOpen(it, false); });
+items.filter(i => i.proj).forEach((it, i) => {
+  it.el.querySelector(".lb").addEventListener("click", () => { if (!dragMoved) goDeep(it, i); });
+  it.el.addEventListener("mouseenter", () => hot = it);
+  it.el.addEventListener("mouseleave", () => { if (hot === it) hot = null; });
 });
-items.forEach(it => it.el.addEventListener("focusin", () => { camT = clampCam(it.X*CS - .08); }));
+// only keyboard focus walks you over; a click focuses too, and moving then would pull the button out from under the pointer
+items.forEach(it => it.el.addEventListener("focusin", e => { if (!dive && e.target.matches(":focus-visible")) camT = clampCam(it.X*CS - .08); }));
+
+/* clicking a project drops down the page into the rockies */
+const world = document.getElementById("world"), deep = document.getElementById("deep"), back = document.getElementById("back");
+let dive = 0, diveT = 0, sel = null;
+function goDeep(it, i){
+  sel = it;
+  document.getElementById("dt").textContent = it.el.querySelector(".tt").textContent;
+  document.getElementById("dm").textContent = it.el.querySelector(".mt").textContent;
+  document.getElementById("dx").innerHTML = it.el.querySelector(".ex > div").innerHTML;
+  bakeRockies(i + 1); paintRockies();
+  diveT = 1; world.inert = true; deep.inert = false; document.body.classList.add("deep");
+  dismissArrow(); back.focus({preventScroll:true});
+}
+function surface(){
+  if (!diveT) return;
+  diveT = 0; world.inert = false; deep.inert = true; document.body.classList.remove("deep");
+  sel.el.querySelector(".lb").focus({preventScroll:true});
+}
+back.addEventListener("click", surface);
 
 /* name letters rise like heat off the rock */
 const nm = document.getElementById("nm");
@@ -507,22 +716,34 @@ mail.addEventListener("click", async () => {
 const startNight = getComputedStyle(document.documentElement).getPropertyValue("--start").trim() === "night";
 let cam = 0, camT = 0, u = startNight ? .93 : .84, uT = u, par = 0, parT = 0;
 const ptr = {x:-999, y:-999, vx:0, in:false};
-let down = null, dragMoved = false;
+let down = null, dragMoved = false, dotC = 0, dotR = 3.2, dotHot = false;
+const bar = () => ({x0:W*.3, x1:W*.7, y:H - 30});
+// how far the pointer is from the dot on the path
+const dotOff = e => { const b = bar(); return [e.clientX - (b.x0 + dotC/CAMMAX*(b.x1 - b.x0)), e.clientY - b.y]; };
 const clampCam = v => cl(v, 0, CAMMAX);
 
-addEventListener("wheel", e => { e.preventDefault(); userMoved = true; const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY; camT = clampCam(camT + d*(e.deltaMode ? 30 : 1)*.0011); }, {passive:false});
+addEventListener("wheel", e => { if (diveT) return; e.preventDefault(); userMoved = true; const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY; camT = clampCam(camT + d*(e.deltaMode ? 30 : 1)*.0011); }, {passive:false});
 addEventListener("keydown", e => {
   if (e.target.closest && e.target.closest("input,textarea")) return;
+  if (diveT){ if (e.key === "Escape") surface(); return; }
   const s = {ArrowRight:.22, ArrowDown:.22, PageDown:.6, ArrowLeft:-.22, ArrowUp:-.22, PageUp:-.6}[e.key];
   if (s){ e.preventDefault(); userMoved = true; camT = clampCam(camT + s); }
   if (e.key === "Home"){ camT = 0; } if (e.key === "End"){ camT = CAMMAX; }
 });
-addEventListener("pointerdown", e => { down = {x:e.clientX, y:e.clientY, cam:camT, id:e.pointerId}; dragMoved = false; });
+addEventListener("pointerdown", e => {
+  if (diveT){ down = null; return; }
+  down = {x:e.clientX, y:e.clientY, cam:camT, id:e.pointerId}; dragMoved = false;
+  // grabbing the dot scrubs the path instead of dragging the land
+  const [dx, dy] = dotOff(e);
+  if (Math.hypot(dx, dy) < (e.pointerType === "touch" ? 24 : 14)){ down.scrub = dx; dragMoved = userMoved = true; document.body.classList.add("dragging"); }
+});
 addEventListener("pointermove", e => {
   ptr.vx = ptr.vx*.7 + (e.clientX - ptr.x)*.3; ptr.x = e.clientX; ptr.y = e.clientY; ptr.in = true;
   if (e.pointerType !== "touch") uT = cl(e.clientX/W, .005, .995);
   parT = (e.clientX/W - .5)*-24;
-  if (down && e.pointerId === down.id){
+  dotHot = e.pointerType !== "touch" && Math.hypot(...dotOff(e)) < 14;
+  if (down && e.pointerId === down.id && down.scrub != null){ const b = bar(); camT = clampCam((e.clientX - down.scrub - b.x0)/(b.x1 - b.x0)*CAMMAX); }
+  else if (down && e.pointerId === down.id){
     const dx = e.clientX - down.x, dy = e.clientY - down.y;
     if (!dragMoved && Math.hypot(dx,dy) > 6){ dragMoved = true; document.body.classList.add("dragging"); }
     if (dragMoved){
@@ -540,7 +761,7 @@ document.documentElement.addEventListener("pointerleave", () => ptr.in = false);
 addEventListener("click", e => { if (dragMoved){ e.preventDefault(); e.stopPropagation(); } }, true);
 cv.addEventListener("click", e => { if (!dragMoved) ravens.push(raven(e.clientX, e.clientY)); });
 
-document.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", () => { camT = JUMP[b.dataset.go]; }));
+document.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", () => { surface(); camT = JUMP[b.dataset.go]; }));
 const home = document.getElementById("home"); home.addEventListener("click", () => camT = 0);
 const arrow = document.getElementById("arrow"); let arrowGone = false;
 arrow.addEventListener("click", () => { if (!dragMoved){ userMoved = true; camT = JUMP.work; } });
@@ -569,7 +790,7 @@ const dust = [], ravens = [];
 function mote(x, y, sp){ return {x, y, vx:(Math.random()-.3)*sp + ptr.vx*.05, vy:(Math.random()-.7)*sp*.6, l:1, s:.8 + Math.random()*1.4}; }
 function raven(x, y){ return {x, y, vx:(ptr.vx > 0 ? 1 : ptr.vx < 0 ? -1 : (Math.random() < .5 ? 1 : -1))*(2.2 + Math.random()), vy:-2.6, t:Math.random()*6, s:1 + Math.random()*.3, l:1}; }
 const devils = new Map();
-function devil(it){ if (!devils.has(it)){ const p = []; for (let i=0;i<150;i++) p.push({a:Math.random()*6.3, h:Math.random(), w:.6 + Math.random()*.8}); devils.set(it, {p, k:0}); } return devils.get(it); }
+function devil(it){ if (!devils.has(it)){ const p = []; for (let i=0;i<260;i++) p.push({a:Math.random()*6.3, h:Math.random(), w:.6 + Math.random()*.8}); devils.set(it, {p, k:0}); } return devils.get(it); }
 
 /* ---------- frame ---------- */
 let last = 0, sunUp = 1, inkState = "", lastFix = 0, drawFailed = false, userMoved = false;
@@ -578,19 +799,11 @@ function layerAt(li, sx){
   const lx = Math.round(sx + cam*L.f*W - par*L.f);
   return L.tops[cl(lx, 0, L.lw-1)];
 }
-function frame(now){
-  const dt = Math.min(50, now - (last || now)); last = now;
-  const k = 1 - Math.pow(.9, dt/16.7);
-  cam += (camT - cam)*(reduce ? 1 : 1 - Math.pow(.925, dt/16.7));
-  u += (uT - u)*k*.5; par += (parT - par)*k*.4;
-  const e = Math.sin(Math.PI*(u*1.2 - .1)); sunUp = e;
-  const S = sky(e), time = now/1000;
-
+function drawSky(S, e, nightK, time){
   const sg = ctx.createLinearGradient(0, 0, 0, H*.72);
   sg.addColorStop(0, css(S.top)); sg.addColorStop(.6, css(S.mid)); sg.addColorStop(1, css(S.hor));
   ctx.fillStyle = sg; ctx.fillRect(0, 0, W, H);
 
-  const nightK = cl((.04 - e)/.26);
   if (nightK > .01){
     ctx.fillStyle = "#FFF6E8";
     for (const s of stars){
@@ -605,46 +818,92 @@ function frame(now){
   glow.addColorStop(0, css(S.sun, .35*(1-nightK))); glow.addColorStop(1, css(S.sun, 0));
   ctx.fillStyle = glow; ctx.fillRect(sunX - sr*4, sunY - sr*4, sr*8, sr*8);
   ctx.fillStyle = css(S.sun, 1 - nightK*.9); ctx.beginPath(); ctx.arc(sunX, sunY, sr, 0, Math.PI*2); ctx.fill();
-  const lx = cl((u - .5)*2.4, -1, 1);
+}
+function frame(now){
+  const dt = Math.min(50, now - (last || now)); last = now;
+  const k = 1 - Math.pow(.9, dt/16.7);
+  cam += (camT - cam)*(reduce ? 1 : 1 - Math.pow(.925, dt/16.7));
+  u += (uT - u)*(1 - Math.pow(.8, dt/16.7)); par += (parT - par)*k*.4;
+  const e = Math.sin(Math.PI*(u*1.2 - .1)); sunUp = e;
+  const S = sky(e), time = now/1000;
+  dive += cl(diveT - dive, -dt/850, dt/850); if (reduce) dive = diveT;
+  const off = H*(dive < .5 ? 4*dive*dive*dive : 1 - Math.pow(2 - 2*dive, 3)/2);
+  const nightK = cl((.04 - e)/.26), lx = cl((u - .5)*2.4, -1, 1), litDust = mix(hx("#E9C49A"), [120,120,160], nightK*.7), darkDust = mix(hx("#A86A44"), [70,66,96], nightK*.7);
   if ((innerWidth !== W || innerHeight !== H || !layers.length) && now - lastFix > 250){ lastFix = now; resize(); }
-  for (const LL of layers){
-    try { drawLayer(LL, S, e, sunX, lx); }
-    catch(err){ ctx.restore && ctx.restore(); if (!drawFailed){ drawFailed = true; console.error(err); layers = []; } }
-  }
 
-  // items
-  const litDust = mix(hx("#E9C49A"), [120,120,160], nightK*.7);
-  for (const it of items){
-    const x = (it.X*CS - cam)*W + par*.6, y = it.sy*H;
-    it.x = x; it.y = y;
-    const vis = x > -700 && x < W + 60;
-    it.el.classList.toggle("gone", !vis);
-    if (vis) it.el.style.transform = `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,0)`;
-    if (!vis || it.layer < 0 || !layers.length) continue;
-    const ax = x + 2, ty = layerAt(it.layer, ax);
-    const bottom = y + (it.open ? it.h : it.lbh) + 8;
-    if (ty != null && ty > bottom){
-      ctx.strokeStyle = css(inkState === "light" ? [246,235,221] : [35,22,18], .5); ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.moveTo(ax, bottom); ctx.lineTo(ax, ty); ctx.stroke();
-      ctx.fillStyle = ctx.strokeStyle; ctx.fillRect(ax - 3, ty - .5, 6, 1);
+  // the desert, pushed up and out of the way while you're in the rockies
+  if (off < H){
+    ctx.save(); ctx.translate(0, -off);
+    drawSky(S, e, nightK, time);
+    for (const LL of layers){
+      try { drawLayer(LL, S, e, lx); }
+      catch(err){ ctx.restore && ctx.restore(); if (!drawFailed){ drawFailed = true; console.error(err); layers = []; } }
     }
-    // a dust devil wakes where the project stands
-    const target = (hot === it || it.open) ? 1 : 0;
-    it.heat += (target - it.heat)*(1 - Math.pow(.97, dt/16.7));
-    if (it.heat > .02 && ty != null){
-      const dv = devil(it), hgt = Math.min(H*.28, ty - y - 20) * it.heat, sc = it.layer === 4 ? 1 : .7;
-      for (const p of dv.p){
-        if (!reduce){ p.a += (.09 + p.h*.05)*dt/16.7*p.w; p.h += .004*dt/16.7; if (p.h > 1) p.h = 0; }
-        const hh = p.h, rad = (3 + hh*hh*26*sc)*(.6 + it.heat*.4);
-        const sway = Math.sin(time*1.7 + hh*3)*hh*10*sc;
-        const px = ax + 14*sc + Math.cos(p.a)*rad + sway, py = ty - hh*hgt;
-        const front = .5 + .5*Math.sin(p.a);
-        ctx.globalAlpha = it.heat*(1 - hh)*.55*(.35 + .65*front);
-        ctx.fillStyle = css(litDust); ctx.fillRect(px, py, 1.4 + front, 1.4 + front);
+
+    // items
+    for (const it of items){
+      const x = (it.X*CS - cam)*W + par*.6, y = it.sy*H;
+      it.x = x; it.y = y;
+      const vis = x > -700 && x < W + 60;
+      it.el.classList.toggle("gone", !vis);
+      if (vis) it.el.style.transform = `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,0)`;
+      if (!vis || it.layer < 0 || !layers.length) continue;
+      const ax = x + 2, ty = layerAt(it.layer, ax);
+      const bottom = y + it.lbh + 8;
+      if (ty != null && ty > bottom){
+        ctx.strokeStyle = css(inkState === "light" ? [246,235,221] : [35,22,18], .5 + .4*it.heat); ctx.lineWidth = 1 + it.heat*.5;
+        ctx.beginPath(); ctx.moveTo(ax, bottom); ctx.lineTo(ax, ty); ctx.stroke();
+        ctx.fillStyle = ctx.strokeStyle; ctx.fillRect(ax - 3, ty - .5, 6, 1);
       }
-      ctx.globalAlpha = 1;
+      // a dust devil wakes where the project stands
+      const target = (hot === it || (sel === it && dive > 0)) ? 1 : 0;
+      it.heat += (target - it.heat)*(1 - Math.pow(target > it.heat ? .88 : .95, dt/16.7));
+      if (it.heat > .02 && ty != null){
+        const dv = devil(it), hgt = Math.min(H*.4, ty - y - 20) * it.heat, sc = it.layer === 4 ? 1 : .7;
+        const cx = ax + 14*sc, wd = (.6 + it.heat*.4)*Math.max(sc, .85)*1.5, sw = h => Math.sin(time*1.7 + h*3)*h*10*sc;
+        // the funnel itself, a haze of dust narrow at the ground and opening upward
+        const fg = ctx.createLinearGradient(0, ty, 0, ty - hgt);
+        fg.addColorStop(0, css(darkDust, .45*it.heat)); fg.addColorStop(.65, css(darkDust, .2*it.heat)); fg.addColorStop(1, css(darkDust, 0));
+        ctx.fillStyle = fg; ctx.beginPath(); ctx.moveTo(cx - 5*wd, ty);
+        for (let i=1;i<=8;i++){ const h = i/8; ctx.lineTo(cx + sw(h) - (5 + h*h*38)*wd, ty - h*hgt); }
+        for (let i=8;i>=1;i--){ const h = i/8; ctx.lineTo(cx + sw(h) + (5 + h*h*38)*wd, ty - h*hgt); }
+        ctx.lineTo(cx + 5*wd, ty); ctx.closePath(); ctx.fill();
+        // grains wheel round it, darker on the far side
+        const tone = [css(darkDust), css(litDust)];
+        for (const p of dv.p){
+          if (!reduce){ p.a += (.09 + p.h*.05)*dt/16.7*p.w; p.h += .004*dt/16.7; if (p.h > 1) p.h = 0; }
+          const hh = p.h, rad = (4 + hh*hh*36)*wd;
+          const px = cx + Math.cos(p.a)*rad + sw(hh), py = ty - hh*hgt;
+          const front = .5 + .5*Math.sin(p.a);
+          ctx.globalAlpha = it.heat*(1 - hh*hh)*.9*(.35 + .65*front);
+          ctx.fillStyle = tone[front > .5 ? 1 : 0]; ctx.fillRect(px, py, 1.6 + front*1.4, 1.6 + front*1.4);
+        }
+        ctx.globalAlpha = 1;
+        // and kicks dust up off the ground
+        if (!reduce && it.heat > .5 && Math.random() < .5*it.heat){ const m = mote(ax + 14*sc + (Math.random() - .5)*30*sc, ty - off, 1.4); m.vy -= .8; dust.push(m); }
+      }
     }
+
+    // path along the bottom: where you are
+    const {x0:lx0, x1:lx1, y:ly} = bar(), scrub = down && down.scrub != null;
+    dotC += ((scrub ? camT : cam) - dotC)*(1 - Math.pow(.5, dt/16.7));
+    dotR += ((scrub || dotHot ? 5.5 : 3.2) - dotR)*k*2;
+    ctx.strokeStyle = "rgba(255,240,225,.35)"; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(lx0, ly); ctx.lineTo(lx1, ly); ctx.stroke();
+    ctx.fillStyle = "rgba(255,240,225,.5)";
+    for (const it of items) ctx.fillRect(lx0 + cl((it.X*CS - .08)/CAMMAX)*(lx1-lx0) - .5, ly - 3, 1, 6);
+    ctx.fillStyle = "rgba(255,246,236,.95)"; ctx.beginPath(); ctx.arc(lx0 + dotC/CAMMAX*(lx1-lx0), ly, dotR, 0, Math.PI*2); ctx.fill();
+    ctx.restore();
   }
+  if (off > 0){
+    ctx.save(); ctx.translate(0, H - off);
+    drawSky(S, e, nightK, time);
+    try { drawRockies(dt); }
+    catch(err){ if (!drawFailed){ drawFailed = true; console.error(err); } rockies = []; }
+    ctx.restore();
+  }
+  world.style.transform = off ? `translate3d(0,${(-off).toFixed(1)}px,0)` : "";
+  deep.style.transform = `translate3d(0,${(H - off).toFixed(1)}px,0)`;
 
   // fragments weathering
   if (fragHot && !reduce){
@@ -683,17 +942,10 @@ function frame(now){
 
   // grain
   if (!grainPat) grainPat = ctx.createPattern(grain, "repeat");
-  ctx.globalCompositeOperation = "overlay"; ctx.globalAlpha = .07;
+  ctx.globalAlpha = .035;
   ctx.save(); ctx.translate((Math.random()*160)|0, (Math.random()*160)|0); ctx.fillStyle = grainPat; ctx.fillRect(-160, -160, W + 320, H + 320); ctx.restore();
-  ctx.globalCompositeOperation = "source-over"; ctx.globalAlpha = 1;
+  ctx.globalAlpha = 1;
 
-  // path along the bottom: where you are
-  const ly = H - 30, lx0 = W*.3, lx1 = W*.7;
-  ctx.strokeStyle = "rgba(255,240,225,.35)"; ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(lx0, ly); ctx.lineTo(lx1, ly); ctx.stroke();
-  ctx.fillStyle = "rgba(255,240,225,.5)";
-  for (const it of items) ctx.fillRect(lx0 + cl((it.X*CS - .08)/CAMMAX)*(lx1-lx0) - .5, ly - 3, 1, 6);
-  ctx.fillStyle = "rgba(255,246,236,.95)"; ctx.beginPath(); ctx.arc(lx0 + cam/CAMMAX*(lx1-lx0), ly, 3.2, 0, Math.PI*2); ctx.fill();
 
   // ink follows the light
   const want = e < .05 ? "light" : "dark";
@@ -714,7 +966,7 @@ function frame(now){
   }
 
   if (!arrowGone && userMoved && cam > .1) dismissArrow();
-  home.classList.toggle("on", cam > .4);
+  home.classList.toggle("on", cam > .4 && !diveT);
   const near = Object.entries(JUMP).reduce((a,b) => Math.abs(b[1]-cam) < Math.abs(a[1]-cam) ? b : a);
   navB.forEach(b => b.setAttribute("aria-current", cam > .3 && b.dataset.go === near[0] ? "true" : "false"));
 
@@ -726,11 +978,11 @@ function resize(){
   W = innerWidth; H = innerHeight; mob = W < 760; CS = mob ? 2.5 : 1;
   cv.width = W*D; cv.height = H*D; ctx.setTransform(D,0,0,D,0,0);
   grainPat = null;
-  CAMMAX = 4.3*CS - .08;
+  CAMMAX = 4.85*CS - .08;
   for (const k in JX) JUMP[k] = Math.min(CAMMAX, JX[k]*CS + (k === "contact" ? 1 : 0)*99);
   JUMP.work = .92*CS - .4; JUMP.about = 2.42*CS - .1; JUMP.contact = CAMMAX;
   camT = clampCam(camT); cam = clampCam(cam);
-  bakeAll();
+  bakeAll(); if (rockSeed >= 0) bakeRockies(rockSeed);
 }
 let rT; addEventListener("resize", () => { clearTimeout(rT); rT = setTimeout(resize, 200); });
 resize();
