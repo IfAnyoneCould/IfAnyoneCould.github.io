@@ -7,11 +7,13 @@
 <meta name="description" content="Jonah Wood, electrical and computer engineering at Northeastern.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..500&family=Public+Sans:wght@400..600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..500&family=Public+Sans:wght@300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
   --ink:#231612; --halo:rgba(230,200,170,.55); --cream:#F6EBDD;
+  --sheet:rgba(251,246,239,.9); --paper:#FBF6EF; --rule:rgba(35,22,18,.16); --tint:rgba(35,22,18,.045);
   --serif:"Newsreader","Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
   --sans:"Public Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
   --ease:cubic-bezier(.2,.75,.1,1);
   --pad:clamp(18px,2.6vw,40px);
@@ -22,8 +24,8 @@
   padding-bottom:env(safe-area-inset-bottom,0px);
 }
 /* the desert lights itself; a dark preference just starts the visit after sundown */
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--start:night;--ink:#F6EBDD;--halo:rgba(18,18,36,.6)}}
-:root[data-theme="dark"]{--start:night;--ink:#F6EBDD;--halo:rgba(18,18,36,.6)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--start:night;--ink:#F6EBDD;--halo:rgba(18,18,36,.6);--sheet:rgba(22,20,36,.88);--paper:#16142A;--rule:rgba(246,235,221,.18);--tint:rgba(246,235,221,.06)}}
+:root[data-theme="dark"]{--start:night;--ink:#F6EBDD;--halo:rgba(18,18,36,.6);--sheet:rgba(22,20,36,.88);--paper:#16142A;--rule:rgba(246,235,221,.18);--tint:rgba(246,235,221,.06)}
 *,*::before,*::after{box-sizing:inherit}
 html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px);background:#1a1420}
 body{height:100%;margin:0;overflow:hidden;background:#1a1420;color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overscroll-behavior:none}
@@ -63,21 +65,33 @@ body.dragging #scene,body.dragging{cursor:grabbing}
   display:inline-block;transform-origin:0 100%;transition:transform .7s var(--ease),font-weight .7s var(--ease)}
 .contact .mail:hover{transform:skewX(-10deg);font-weight:400}
 .contact .row{display:flex;flex-wrap:wrap;gap:8px 24px;margin-top:20px;font-size:.9375rem;font-weight:500}
-.contact .row a{text-underline-offset:4px;text-decoration-thickness:1px}
+.contact .row a,.contact .row button{text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px}
 .contact .st{display:block;margin-top:12px;font-size:.8125rem;opacity:.75;min-height:1.2em}
 
 /* down in the rockies */
 #deep{position:fixed;inset:0;pointer-events:none;color:var(--ink);text-shadow:0 0 22px var(--halo),0 0 6px var(--halo);transition:color 1.2s ease;will-change:transform;transform:translate3d(0,100vh,0)}
-#deep .back,#deep .dp{pointer-events:auto}
-#deep .back{position:absolute;top:var(--pad);left:var(--pad);display:flex;align-items:center;gap:10px;font-family:var(--serif);font-size:1.25rem}
-#deep .back svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;transition:transform .5s var(--ease)}
+.scene .back,#deep .dp,#city .sheet{pointer-events:auto}
+.scene .back{position:absolute;top:var(--pad);left:var(--pad);display:flex;align-items:center;gap:10px;font-family:var(--serif);font-size:1.25rem}
+.scene .back svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;transition:transform .5s var(--ease)}
 #deep .back:hover svg{transform:translateY(-3px)}
+#city .back:hover svg{transform:translateX(3px)}
 #deep .dp{position:absolute;left:calc(var(--pad)*2.2);top:clamp(84px,17vh,19vh);max-width:52ch;max-height:calc(100% - clamp(84px,17vh,19vh) - 24px);overflow:auto;scrollbar-width:none}
 #deep h2{margin:0;font-family:var(--serif);font-weight:300;font-size:clamp(2.2rem,min(5vw,8.5vh),5rem);line-height:.98;letter-spacing:-.02em;font-variation-settings:"opsz" 72}
 #deep .dm{margin:14px 0 0;font-size:.875rem;opacity:.75}
 #deep .dx p{margin:14px 0 0;font-size:1.0625rem;line-height:1.55}
 #deep .dx a{display:inline-block;margin-top:16px;font-size:.9375rem;font-weight:600;text-underline-offset:4px;text-decoration-thickness:1px}
 body.deep #scene{cursor:default}
+
+/* along the coast in maine: the resume, laid out the way the desert is */
+#city{position:fixed;inset:0;pointer-events:none;touch-action:none;overflow:hidden;will-change:transform;transform:translate3d(-100vw,0,0)}
+#cworld{position:absolute;inset:0;pointer-events:none}
+.scene .back:focus-visible{outline:none;text-decoration:underline;text-underline-offset:5px}
+.name h2{margin:0;font-family:var(--serif);font-weight:300;font-size:clamp(3rem,7.4vw,7.6rem);line-height:.92;letter-spacing:-.025em;font-variation-settings:"opsz" 72}
+#city .proj a.lb{text-decoration:none}
+#city .proj a.lb:hover .tt{text-decoration:underline;text-underline-offset:5px;text-decoration-thickness:1px}
+#city .proj .pd{margin:10px 0 0;max-width:32ch;font-size:.875rem;line-height:1.5}
+#city .end .row{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:16px;font-size:.9375rem;font-weight:500}
+#city .end a,#city .end button,#city .name a{text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px}
 
 /* corner */
 .corner{position:fixed;top:var(--pad);right:var(--pad);display:flex;gap:22px;font-size:.875rem;font-weight:500;color:var(--ink);text-shadow:0 0 16px var(--halo);transition:color 1.2s ease;z-index:3}
@@ -108,6 +122,8 @@ body.deep #scene{cursor:default}
   .frag{max-width:22ch}
   .frag.small{max-width:min(30ch,74vw)}
   #deep .dp{left:var(--pad);right:var(--pad);top:14vh}
+  .scene .back .lg{display:none}
+  #city .proj .pd{max-width:min(28ch,74vw)}
   .contact .mail{font-size:clamp(1.5rem,7.2vw,2.4rem)}
   .corner{gap:16px;font-size:.8125rem}
   .home{font-size:1.05rem}
@@ -123,6 +139,7 @@ body.deep #scene{cursor:default}
   <button type="button" data-go="work">Work</button>
   <button type="button" data-go="about">About</button>
   <button type="button" data-go="contact">Contact</button>
+  <button type="button" id="go-resume" data-resume>Resume</button>
 </nav>
 
 <button class="arrow" id="arrow" type="button" aria-label="Walk east">
@@ -221,13 +238,54 @@ body.deep #scene{cursor:default}
       <a href="mailto:jonahwood1408@gmail.com">Open in mail</a>
       <a href="https://github.com/IfAnyoneCould" target="_blank" rel="noopener">GitHub</a>
       <a href="https://www.linkedin.com/in/jonah-wood-1494322ab/" target="_blank" rel="noopener">LinkedIn</a>
+      <button type="button" data-resume>Resume</button>
     </div>
   </div>
 </div>
 
-<section id="deep" aria-label="Project" inert>
-  <button class="back" id="back" type="button"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 12.5V1.8M2.2 6.4L7 1.5l4.8 4.9"/></svg>Back to the desert</button>
+<section id="deep" class="scene" aria-label="Project" inert>
+  <button class="back" id="back" type="button"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 12.5V1.8M2.2 6.4L7 1.5l4.8 4.9"/></svg><span>Back<span class="lg"> to the desert</span></span></button>
   <div class="dp"><h2 id="dt"></h2><p class="dm" id="dm"></p><div class="dx" id="dx"></div></div>
+</section>
+
+<section id="city" class="scene" aria-label="Resume" inert>
+  <button class="back" id="cback" type="button"><span>Back<span class="lg"> to the desert</span></span><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M1.5 7h10.7M7.6 2.2L12.5 7l-4.9 4.8"/></svg></button>
+  <div id="cworld">
+    <div class="it name" data-x="5.58" data-sy=".12">
+      <h2>Resume</h2>
+      <p>Everything on one page is <a href="resume.pdf" target="_blank" rel="noopener">here, as a PDF</a>. The long way round is along the coast.</p>
+      <p class="hint">Scroll, drag, or use the arrow keys to walk west. The sun follows your cursor.</p>
+    </div>
+
+    <p class="it frag" data-x="5.14" data-sy=".09">Northeastern University, B.S. in Electrical and Computer Engineering. Expected May 2030.</p>
+    <p class="it frag small" data-x="4.84" data-sy=".3"><b>Before that</b> an Associate of Science from Salt Lake Community College and an Honors Diploma from Beehive Science and Technology Academy, both in April 2026.</p>
+
+    <div class="it proj" data-x="4.56" data-sy=".2" data-layer="3"><div class="lb"><span class="tt">Engineering Intern, Yale Cordage</span><span class="mt">Jul. to Sep. 2026, Saco, Maine</span></div></div>
+    <p class="it frag small" data-x="4.26" data-sy=".08">Designed, built, budgeted, ordered, and programmed a patent-pending <b>Smart Reeve Plate</b>, an end-to-end system that guides twisting-machine operators through rope reeving patterns with a scan-to-LED workflow.</p>
+    <p class="it frag small" data-x="4.0" data-sy=".3">Architected the whole pipeline in Node-RED: barcode work-order scan, product-config lookup, PLC, HMI selection, pattern retrieval, and an Arduino-driven LED display on a custom-machined plate.</p>
+    <p class="it frag small" data-x="3.74" data-sy=".1">Designed a human-readable topology language and a parser that compiles reeve patterns into hole-position and end-count data, with authoring tools built around documentation and ease of use.</p>
+    <p class="it frag small" data-x="3.48" data-sy=".3">Engineered a custom hex encoding to fit pattern data in limited PLC memory, and designed the PCB and LED layout that shows each pattern on the plate.</p>
+    <p class="it frag" data-x="3.22" data-sy=".1">Parsed 3,000+ rows of unstructured product data into a database, saving tens of thousands of dollars and weeks of manual work.</p>
+
+    <div class="it proj" data-x="2.92" data-sy=".22" data-layer="4"><div class="lb"><span class="tt">Hive 3747</span><span class="mt">FIRST Tech Challenge, lead designer and build lead, 2023 to 2026</span></div></div>
+    <p class="it frag" data-x="2.64" data-sy=".09">Back-to-back Utah State Inspire Awards, #1 robot-game rankings, and the World Championship all three seasons.</p>
+    <p class="it frag small" data-x="2.36" data-sy=".3">Designed and fabricated virtually every mechanism on the robot for three years, owned the CAD in Fusion 360, and worked closely with the programmers.</p>
+
+    <p class="it frag small" data-x="2.08" data-sy=".12"><b>Languages</b> Java, C++, embedded C, Go and Python.</p>
+    <p class="it frag small" data-x="1.84" data-sy=".3"><b>At the bench</b> Fusion 360, 3D printing, laser cutting, PCB design, Node-RED, PLC and HMI, Arduino, Git.</p>
+    <p class="it frag" data-x="1.58" data-sy=".1">National Merit Scholarship Finalist. Congressional Award Gold Medal.</p>
+    <p class="it frag small" data-x="1.32" data-sy=".3"><b>AP Scholar with Distinction</b>, eight exams with seven 5s, including Physics C: Mechanics, Calculus AB and Computer Science A.</p>
+
+    <div class="it proj" data-x="1.06" data-sy=".14" data-layer="3"><a class="lb" href="https://github.com/IfAnyoneCould/cpp-game-engine" target="_blank" rel="noopener"><span class="tt">cpp-game-engine</span><span class="mt">C++20</span></a><p class="pd">A 2D engine from scratch on SDL2 and OpenGL, with fixed-timestep 240 Hz physics, SAT and AABB collision, and levels painted as PNGs.</p></div>
+    <div class="it proj" data-x="0.8" data-sy=".3" data-layer="4"><a class="lb" href="https://github.com/IfAnyoneCould/Evolution_Engine" target="_blank" rel="noopener"><span class="tt">Evolution Engine</span><span class="mt">Go</span></a><p class="pd">A language-agnostic genetic-algorithm optimizer over a stdin/stdout pipe. A persistent worker pool cut each generation about 900x.</p></div>
+    <div class="it proj" data-x="0.54" data-sy=".12" data-layer="3"><a class="lb" href="https://github.com/IfAnyoneCould/canvas-achieve-sync" target="_blank" rel="noopener"><span class="tt">canvas-achieve-sync</span><span class="mt">Python</span></a><p class="pd">Canvas, Achieve and the Northeastern calendar, kept in one Google Tasks list.</p></div>
+    <div class="it proj" data-x="0.3" data-sy=".3" data-layer="4"><a class="lb" href="https://github.com/IfAnyoneCould/neu-clubs" target="_blank" rel="noopener"><span class="tt">neu-clubs</span><span class="mt">Python</span></a><p class="pd">All 933 Northeastern student groups, scraped into one searchable table.</p></div>
+
+    <div class="it end" data-x="0.04" data-sy=".16">
+      <p class="frag">That&rsquo;s all of it.</p>
+      <div class="row"><a href="resume.pdf" target="_blank" rel="noopener">View the PDF</a><a href="mailto:jonahwood1408@gmail.com">Email</a><a href="https://github.com/IfAnyoneCould" target="_blank" rel="noopener">GitHub</a><button type="button" id="cback2">Back to the desert</button></div>
+    </div>
+  </div>
 </section>
 
 <script>
@@ -384,19 +442,33 @@ function makeForm(L, x, sc, hs){
 }
 function makeBush(x, y, s){ const b = []; const n = 4 + (rnd()*5|0); for (let i=0;i<n;i++) b.push([R(-1,1)*s, -R(0,1)*s*.9, s*R(.45,.8)]); return {x, y, b, s}; }
 
-function buildLayer(L){
-  const lw = Math.ceil(W + L.f*CAMMAX*W + 120);
+// highest point of a shape's outline straight up from x, relative to its base
+function topAt(out, x){ let t = 0; for (let i = 0; i < out.length; i++){ const [ax, ay] = out[i], [bx, by] = out[(i + 1) % out.length]; if ((ax - x)*(bx - x) <= 0 && ax !== bx){ const y = ay + (by - ay)*(x - ax)/(bx - ax); if (y < t) t = y; } } return t; }
+function buildLayer(L, cmax = CAMMAX){
+  const lw = Math.ceil(W + L.f*cmax*W + 120);
   const sc = Math.max(.7, Math.min(1.4, H/860)), hs = mob ? .82 : 1;
   const base = L.base*H;
   const tops = new Float32Array(lw).fill(base);
   const forms = [], bushes = [];
-  seedR(Math.round(L.f*1000) + 7);
+  seedR(Math.round(L.f*1000) + 7 + (L.seed || 0));
   const mark = (a, b, y) => { for (let xx = Math.max(0, Math.floor(a)); xx < Math.min(lw, Math.ceil(b)); xx++) tops[xx] = Math.min(tops[xx], y); };
   if (!L.ground){
     let x = -R(20,120);
     while (x < lw){
       const fm = makeForm(L, x, sc, hs);
       forms.push(fm);
+      // pines along the tops, for the coast: set on the rock's real outline, only where it's level, kept in from the edges
+      if (L.pines){
+        fm.pines = [];
+        for (const b of fm.blocks){
+          if (b.top[1] - b.top[0] < 30*sc) continue;
+          for (let px = b.top[0] + R(6, 12)*sc; px < b.top[1] - 6*sc; px += R(5, 11)*sc){
+            const s0 = R(10, 24)*sc*L.pines, m = s0*.34, y = topAt(b.out, px), yl = topAt(b.out, px - m), yr = topAt(b.out, px + m);
+            if (px - m < b.top[0] || px + m > b.top[1] || Math.abs(yl - y) > 2*sc || Math.abs(yr - y) > 2*sc) continue;
+            fm.pines.push([px, base + y + 1.5*sc, s0, R(.8, 1.2)]);
+          }
+        }
+      }
       for (const b of fm.blocks) mark(b.top[0], b.top[1], base - b.h);
       if (fm.ped) mark(fm.ped.top[0], fm.ped.top[1], base - fm.ped.h);
       const tw = fm.x1 - fm.x;
@@ -467,15 +539,17 @@ function floor(col, base, ox, L, hill = 0){
   for (let x=0; x<=W+10; x+=10) ctx.lineTo(x, base - 1 + Math.sin((x - ox)*.012 + L.f*40)*(L.ground ? 7 : 1.5) + (L.ground ? Math.sin((x - ox)*.004)*9 : 0) - hill*n1((x - ox)*.005 + L.f*90));
   ctx.lineTo(W, H); ctx.closePath(); ctx.fill();
 }
-function drawLayer(LL, S, e, lx){
-  const L = LL.L, ox = -cam*L.f*W + par*L.f, base = LL.base, P = layerPal(L, S), sc = LL.sc;
+function drawLayer(LL, S, e, lx, cv = cam, pal = PALRGB){
+  const L = LL.L, ox = -cv*L.f*W + par*L.f, base = LL.base, P = layerPal(L, S, pal), sc = LL.sc;
   const T = shader([P.rgb.deep, P.rgb.shadow, P.rgb.mid, P.rgb.lit2, P.rgb.lit], S, e, lx);
   floor(P.floor, base, ox, L);
   for (const fm of LL.forms){
     if (fm.x1 + fm.ext + ox < -20 || fm.x - fm.ext + ox > W + 20) continue;
     for (const b of fm.blocks) drawShape(b, ox, base, L, T, sc);
     if (fm.ped) drawShape(fm.ped, ox, base, L, T, sc);
+    if (fm.pines) drawPines(fm.pines, ox, P, S, e, lx);
   }
+  if (LL.light) drawLight(LL.light, ox, T, S, e);
 }
 
 /* ---------- the rockies: down the page, where each project lives ---------- */
@@ -573,23 +647,32 @@ function buildRange(L, seed){
 let rockies = [], rockSeed = -1;
 function bakeRockies(seed){ rockSeed = seed; rockies = MLAYERS.map(L => buildRange(L, seed)); rcU = null; }
 
-// the rockies hold still, so they're painted once and only repainted, a few ranges a frame, when the light moves
+// the rockies and boston hold still, so whichever you're in is painted once and only repainted,
+// a few layers a frame, when the light moves
 const rc = [document.createElement("canvas"), document.createElement("canvas")];
-let rcU = null, rcJob = null, rcFade = 1;
+let rcU = null, rcJob = null, rcFade = 1, rcScene = null;
+const ROCK = {layers: () => rockies, steps: rangeSteps};
 function light(u){ const e = Math.sin(Math.PI*(u*1.2 - .1)); return {u, e, S:sky(e), lx:cl((u - .5)*2.4, -1, 1)}; }
-function rcClear(c){ c.width = W*D; c.height = H*D; const g = c.getContext("2d"); g.setTransform(D,0,0,D,0,0); return g; }
-function paintRange(g, LL, Lt){ const m = ctx; ctx = g; try { drawRange(LL, Lt.S, Lt.e, Lt.lx); } finally { ctx = m; } }
-function paintRockies(){ const g = rcClear(rc[0]), Lt = light(u); for (const LL of rockies) paintRange(g, LL, Lt); rcU = u; rcJob = null; rcFade = 1; }
-function drawRockies(dt){
-  if (rcU === null) paintRockies();
-  if (!rcJob && rcFade >= 1 && Math.abs(u - rcU) > .008) rcJob = {Lt:light(u), i:0, g:rcClear(rc[1])};
+function rcClear(c){ const g = c.getContext("2d"); if (c.width !== W*D || c.height !== H*D){ c.width = W*D; c.height = H*D; } else { g.setTransform(1,0,0,1,0,0); g.clearRect(0, 0, c.width, c.height); } g.setTransform(D,0,0,D,0,0); return g; }
+// runs one slice of a layer's drawing into g; true once the layer is finished
+function paintStep(g, it){ const m = ctx; ctx = g; try { return it.next().done; } finally { ctx = m; } }
+function paintLayer(g, LL, Lt){ const it = rcScene.steps(LL, Lt.S, Lt.e, Lt.lx); while (!paintStep(g, it)); }
+function paintScene(sc){ if (sc) rcScene = sc; const g = rcClear(rc[0]), Lt = light(u); for (const LL of rcScene.layers()) paintLayer(g, LL, Lt); rcU = u; rcJob = null; rcFade = 1; }
+function drawScene(dt){
+  if (!rcScene) return;
+  if (rcU === null) paintScene();
+  const Ls = rcScene.layers();
+  if (!rcJob && rcFade >= 1 && Math.abs(u - rcU) > .005) rcJob = {Lt:light(u), i:0, g:rcClear(rc[1])};
   if (rcJob){
     const t0 = performance.now();
-    do paintRange(rcJob.g, rockies[rcJob.i++], rcJob.Lt); while (rcJob.i < rockies.length && performance.now() - t0 < 5);
-    if (rcJob.i >= rockies.length){ rc.reverse(); rcU = rcJob.Lt.u; rcJob = null; rcFade = 0; }
+    do {
+      if (!rcJob.it) rcJob.it = rcScene.steps(Ls[rcJob.i], rcJob.Lt.S, rcJob.Lt.e, rcJob.Lt.lx);
+      if (paintStep(rcJob.g, rcJob.it)){ rcJob.it = null; rcJob.i++; }
+    } while (rcJob.i < Ls.length && performance.now() - t0 < 4);
+    if (rcJob.i >= Ls.length){ rc.reverse(); rcU = rcJob.Lt.u; rcJob = null; rcFade = 0; }
   }
   // cross-fade from the old light to the new
-  rcFade = Math.min(1, rcFade + dt/140);
+  rcFade = Math.min(1, rcFade + dt/90);
   if (rcFade < 1) ctx.drawImage(rc[1], 0, 0, W, H);
   ctx.globalAlpha = rcFade; ctx.drawImage(rc[0], 0, 0, W, H); ctx.globalAlpha = 1;
 }
@@ -599,7 +682,7 @@ function drawSnow(b, ox, base, T){
   faces(b, ox, base, T);
   ctx.restore();
 }
-function drawTrees(LL, ox, base, T){
+function* drawTrees(LL, ox, base, T){
   const lit = [T(-.8), T(.8)], tr = LL.trees;
   // a few dozen at a time, back to front, so the forest still overlaps itself
   for (let c=0;c<tr.length;c+=24) for (let si=0;si<2;si++){
@@ -610,9 +693,11 @@ function drawTrees(LL, ox, base, T){
       ctx.lineTo(X + w*.5, Y - s*.28); ctx.lineTo(X + w, Y); ctx.lineTo(X, Y); ctx.closePath();
     }
     ctx.fillStyle = lit[si]; ctx.fill();
+    if (si) yield;
   }
 }
-function drawRange(LL, S, e, lx){
+// a generator so a relight can stop between peaks and every few dozen trees, and pick up next frame
+function* rangeSteps(LL, S, e, lx){
   const L = LL.L, ox = 0, base = LL.base, P = layerPal(L, S, MPALRGB), sc = LL.sc;
   const rock = shader(rampOf(P, "r"), S, e, lx), snow = shader(rampOf(P, "s"), S, e, lx), tree = shader(rampOf(P, "t"), S, e, lx), wood = tree(-.5);
   // foothills under the peaks, coloured like their lower slopes so they don't read as terraces
@@ -621,8 +706,9 @@ function drawRange(LL, S, e, lx){
   for (const pk of LL.peaks){
     drawShape(pk, ox, base, L, rock, sc); drawSnow(pk, ox, base, snow);
     if (pk.wood){ ctx.save(); poly(pk.out, ox, base); ctx.clip(); poly(pk.wood, ox, base); ctx.fillStyle = wood; ctx.fill(); ctx.restore(); }
+    yield;
   }
-  if (LL.trees.length) drawTrees(LL, ox, base, tree);
+  if (LL.trees.length) yield* drawTrees(LL, ox, base, tree);
   // haze pooling in the valley at the foot of each range, carried on down over its foothills
   for (const pk of LL.peaks){
     const g = ctx.createLinearGradient(0, base - pk.h*.7, 0, base);
@@ -630,6 +716,83 @@ function drawRange(LL, S, e, lx){
     ctx.save(); poly([[-40, H], ...pk.out.slice(1, -1), [W + 80, H]], ox, base); ctx.clip(); ctx.fillStyle = g; ctx.fillRect(-50, base - pk.h - 10, W + 150, H); ctx.restore();
   }
 }
+
+/* ---------- the maine coast, where the resume is: the desert's rock gone to granite, with the sea for a floor ---------- */
+const COASTPAL = {lit:"#EAE4D0", lit2:"#CCC6B0", mid:"#9B9A8D", shadow:"#606A6B", deep:"#36434E",
+  talus:"#767C74", talusLit:"#B0AF9C", floor:"#5C8099", bush:"#2F4A3B", bushLit:"#4A6A4F",
+  p0:"#1B2E26", p1:"#26402F", p2:"#35553C", p3:"#4A6C4B", p4:"#61845C"};
+const COASTRGB = {}; for (const k in COASTPAL) COASTRGB[k] = hx(COASTPAL[k]);
+const CLAYERS = [
+  {f:.03, base:.63,  hmin:.03, hmax:.075, kinds:["mesa","mesa","butte"], haze:.74, detail:0, spread:[1.3,2.6], seed:300},
+  {f:.08, base:.66,  hmin:.035, hmax:.1,  kinds:["mesa","butte","mesa"], haze:.56, detail:1, spread:[1.2,2.4], seed:300, pines:.45},
+  {f:.16, base:.705, hmin:.05, hmax:.14,  kinds:["butte","mesa","monument"], haze:.36, detail:2, spread:[1.1,2.2], seed:300, pines:.6},
+  {f:.27, base:.77,  hmin:.08, hmax:.19,  kinds:["butte","monument","mesa","spires"], haze:.18, detail:3, spread:[1.1,2.3], seed:300, pines:.8},
+  {f:.42, base:.875, hmin:.1,  hmax:.24,  kinds:["monument","butte","spires","mesa"], haze:.03, detail:3, spread:[1.3,2.6], seed:300, pines:1},
+  {f:.6,  base:.955, ground:true, haze:0, seed:300}
+];
+let clayers = [], CMAXC = 5.52, ccam = 0, ccamT = 0;
+const clampC = v => cl(v, 0, CMAXC);
+function bakeCoast(){
+  clayers = CLAYERS.map(L => buildLayer(L, CMAXC + 1));
+  // a lighthouse out on a point, a little way along
+  const LL = clayers[3], want = (4.5*CS - .4)*LL.f*W + W*.72;
+  // somewhere wide and level enough that the tower's footing sits well inside the rock
+  const sc = LL.sc, foot = 11*sc; let best = null;
+  for (const fm of LL.forms) for (const b of fm.blocks){
+    if (b.top[1] - b.top[0] < foot*5) continue;
+    for (let x = b.top[0] + foot*2; x < b.top[1] - foot*2; x += 4*sc){
+      const y = topAt(b.out, x), flat = Math.max(Math.abs(topAt(b.out, x - foot*1.6) - y), Math.abs(topAt(b.out, x + foot*1.6) - y));
+      if (flat > 1.5*sc) continue;
+      const score = Math.abs(x - want) - b.h*.5;
+      if (!best || score < best.score) best = {score, x, y, fm};
+    }
+  }
+  if (best){ LL.light = {x:best.x, y:LL.base + best.y, sc}; best.fm.pines = best.fm.pines && best.fm.pines.filter(p => Math.abs(p[0] - best.x) > 26*sc); }
+}
+function drawPines(pines, ox, P, S, e, lx){
+  const T = shader([P.rgb.p0, P.rgb.p1, P.rgb.p2, P.rgb.p3, P.rgb.p4], S, e, lx);
+  for (const side of [-1, 1]){
+    ctx.fillStyle = T(side*.8); ctx.beginPath();
+    for (const [x, y, s, wk] of pines){
+      const X = x + ox; if (X < -20 || X > W + 20) continue;
+      const w = s*.3*wk*side;
+      ctx.moveTo(X, y - s); ctx.lineTo(X + w*.45, y - s*.6); ctx.lineTo(X + w*.28, y - s*.58); ctx.lineTo(X + w*.75, y - s*.26); ctx.lineTo(X + w*.5, y - s*.24); ctx.lineTo(X + w, y); ctx.lineTo(X, y); ctx.closePath();
+    }
+    ctx.fill();
+  }
+}
+function drawLight(L, ox, T, S, e){
+  const x = L.x + ox, y = L.y, s = L.sc, h = 64*s, w0 = 11*s, w1 = 7*s;
+  if (x < -300 || x > W + 300) return;
+  ctx.fillStyle = css(mix([248,244,236], S.hor, .15)); ctx.beginPath(); ctx.moveTo(x - w0, y); ctx.lineTo(x - w1, y - h); ctx.lineTo(x + w1, y - h); ctx.lineTo(x + w0, y); ctx.fill();
+  ctx.fillStyle = "rgba(40,30,40,.14)"; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y - h); ctx.lineTo(x + w1, y - h); ctx.lineTo(x + w0, y); ctx.fill();
+  ctx.fillStyle = css(mix([168,52,44], S.hor, .15)); ctx.fillRect(x - w1 - 2*s, y - h - 5*s, (w1 + 2*s)*2, 5*s); ctx.fillRect(x - w1*.8, y - h - 17*s, w1*1.6, 12*s);
+  ctx.beginPath(); ctx.moveTo(x - w1, y - h - 17*s); ctx.lineTo(x, y - h - 25*s); ctx.lineTo(x + w1, y - h - 17*s); ctx.fill();
+  const nk = cl((.04 - e)/.26), ly = y - h - 11*s;
+  ctx.fillStyle = css([255,236,190], .5 + .5*nk); ctx.fillRect(x - w1*.5, ly - 3*s, w1, 6*s);
+  // after dark, the beam goes round
+  if (nk > .02 && !reduce){
+    const a = performance.now()/1000*.9, dir = Math.cos(a), len = W*.5*Math.abs(dir) + 40, sp = 22*s;
+    const g = ctx.createLinearGradient(x, ly, x + Math.sign(dir)*len, ly);
+    g.addColorStop(0, `rgba(255,236,190,${(.42*nk).toFixed(3)})`); g.addColorStop(1, "rgba(255,236,190,0)");
+    ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(x, ly); ctx.lineTo(x + Math.sign(dir)*len, ly - sp); ctx.lineTo(x + Math.sign(dir)*len, ly + sp); ctx.fill();
+  }
+}
+// open water out to the horizon, behind the headlands, with the sun lying on it
+function drawSea(S, e, lx, time){
+  const y0 = H*.625, nk = cl((.04 - e)/.26), g = ctx.createLinearGradient(0, y0, 0, H);
+  g.addColorStop(0, css(mix(COASTRGB.floor, S.hor, .55))); g.addColorStop(1, css(mix(COASTRGB.floor, S.tint, .25)));
+  ctx.fillStyle = g; ctx.fillRect(-10, y0, W + 20, H - y0);
+  const sx = u*W, gl = css(mix(S.sun, [255,255,255], .3), .55*(1 - nk*.7));
+  ctx.fillStyle = gl;
+  for (let i = 0; i < 26; i++){
+    const yy = y0 + 3 + i*i*.5, w = (40 + i*9)*(.7 + .3*Math.sin(time*1.3 + i*1.7)), xx = sx + Math.sin(i*2.3 + time*.4)*i*3;
+    if (yy > H) break;
+    ctx.globalAlpha = .7 - i/40; ctx.fillRect(xx - w/2, yy, w, 1.2);
+  }
+  ctx.globalAlpha = 1;
+}
+function cLayerAt(li, sx){ const L = clayers[li]; if (!L) return null; return L.tops[cl(Math.round(sx + ccam*L.f*W - par*L.f), 0, L.lw - 1)]; }
 
 /* ---------- sky ---------- */
 const KEYS = [
@@ -656,7 +819,7 @@ const grain = document.createElement("canvas"); grain.width = grain.height = 160
 let grainPat = null;
 
 /* ---------- items ---------- */
-const items = [...document.querySelectorAll(".it")].map(el => ({
+const items = [...document.querySelectorAll("#world .it")].map(el => ({
   el, X:+el.dataset.x, sy:+el.dataset.sy,
   layer: el.dataset.layer ? +el.dataset.layer : -1, lbh:0, x:0, y:0, heat:0, proj: el.classList.contains("proj")
 }));
@@ -679,7 +842,7 @@ function goDeep(it, i){
   document.getElementById("dt").textContent = it.el.querySelector(".tt").textContent;
   document.getElementById("dm").textContent = it.el.querySelector(".mt").textContent;
   document.getElementById("dx").innerHTML = it.el.querySelector(".ex > div").innerHTML;
-  bakeRockies(i + 1); paintRockies();
+  bakeRockies(i + 1); paintScene(ROCK);
   diveT = 1; world.inert = true; deep.inert = false; document.body.classList.add("deep");
   dismissArrow(); back.focus({preventScroll:true});
 }
@@ -689,6 +852,36 @@ function surface(){
   sel.el.querySelector(".lb").focus({preventScroll:true});
 }
 back.addEventListener("click", surface);
+
+/* the resume is off to the west, on the coast. the wind carries you there, then you walk it like the desert */
+const city = document.getElementById("city"), cback = document.getElementById("cback"), resumeB = document.getElementById("go-resume");
+const seamC = document.createElement("canvas");
+let trip = 0, tripT = 0, toCity = false, chot = null, cityE = null, cityS = null, cDot = 0, cDotR = 3.2, cDotHot = false;
+const cDotOff = e => [e.clientX - (W*.3 + cl(cDot/CMAXC)*W*.4), e.clientY - (H - 30)];
+const citems = [...document.querySelectorAll("#cworld .it")].map(el => ({el, X:+el.dataset.x, sy:+el.dataset.sy, layer:el.dataset.layer ? +el.dataset.layer : -1, lbh:0, x:0, heat:0}));
+const cro = new ResizeObserver(es => es.forEach(e => { const it = citems.find(i => i.el === e.target); if (it) it.lbh = it.el.offsetHeight; }));
+citems.forEach(it => {
+  cro.observe(it.el);
+  if (it.layer >= 0){ it.el.addEventListener("mouseenter", () => chot = it); it.el.addEventListener("mouseleave", () => { if (chot === it) chot = null; }); }
+  it.el.addEventListener("focusin", e => { if (e.target.matches(":focus-visible")) ccamT = clampC(it.X*CS - .08); });
+});
+function goCity(){
+  if (tripT) return;
+  if (diveT){ surface(); toCity = true; return; }
+  if (!clayers.length) bakeCoast();
+  // arrive at the east end, with the camera still carrying the swoop in
+  ccamT = CMAXC; ccam = reduce ? CMAXC : CMAXC + .9; cDot = CMAXC;
+  tripT = 1; world.inert = true; city.inert = false; document.body.classList.add("city");
+  dismissArrow(); cback.focus({preventScroll:true});
+}
+function leaveCity(){
+  if (!tripT) return;
+  tripT = 0; world.inert = false; city.inert = true; document.body.classList.remove("city");
+  resumeB.focus({preventScroll:true});
+}
+cback.addEventListener("click", leaveCity);
+document.getElementById("cback2").addEventListener("click", leaveCity);
+document.querySelectorAll("[data-resume]").forEach(b => b.addEventListener("click", () => { if (!dragMoved) goCity(); }));
 
 /* name letters rise like heat off the rock */
 const nm = document.getElementById("nm");
@@ -722,15 +915,29 @@ const bar = () => ({x0:W*.3, x1:W*.7, y:H - 30});
 const dotOff = e => { const b = bar(); return [e.clientX - (b.x0 + dotC/CAMMAX*(b.x1 - b.x0)), e.clientY - b.y]; };
 const clampCam = v => cl(v, 0, CAMMAX);
 
-addEventListener("wheel", e => { if (diveT) return; e.preventDefault(); userMoved = true; const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY; camT = clampCam(camT + d*(e.deltaMode ? 30 : 1)*.0011); }, {passive:false});
+addEventListener("wheel", e => {
+  if (tripT){ e.preventDefault(); const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : -e.deltaY; ccamT = clampC(ccamT + d*(e.deltaMode ? 30 : 1)*.0011); return; }
+  if (diveT) return; e.preventDefault(); userMoved = true; const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY; camT = clampCam(camT + d*(e.deltaMode ? 30 : 1)*.0011); }, {passive:false});
 addEventListener("keydown", e => {
   if (e.target.closest && e.target.closest("input,textarea")) return;
-  if (diveT){ if (e.key === "Escape") surface(); return; }
+  if (tripT){
+    const st = {ArrowRight:.22, ArrowUp:.22, PageUp:.6, ArrowLeft:-.22, ArrowDown:-.22, PageDown:-.6}[e.key];
+    if (st){ e.preventDefault(); ccamT = clampC(ccamT + st); }
+    if (e.key === "Home") ccamT = CMAXC; if (e.key === "End") ccamT = 0;
+  }
+  if (diveT || tripT){ if (e.key === "Escape"){ surface(); leaveCity(); } return; }
   const s = {ArrowRight:.22, ArrowDown:.22, PageDown:.6, ArrowLeft:-.22, ArrowUp:-.22, PageUp:-.6}[e.key];
   if (s){ e.preventDefault(); userMoved = true; camT = clampCam(camT + s); }
   if (e.key === "Home"){ camT = 0; } if (e.key === "End"){ camT = CAMMAX; }
 });
 addEventListener("pointerdown", e => {
+  if (tripT){
+    down = {x:e.clientX, y:e.clientY, cam:ccamT, id:e.pointerId, city:true}; dragMoved = false;
+    // the dot on the coast's path scrubs it, same as the desert's
+    const [dx, dy] = cDotOff(e);
+    if (Math.hypot(dx, dy) < (e.pointerType === "touch" ? 24 : 14)){ down.scrub = dx; dragMoved = true; document.body.classList.add("dragging"); }
+    return;
+  }
   if (diveT){ down = null; return; }
   down = {x:e.clientX, y:e.clientY, cam:camT, id:e.pointerId}; dragMoved = false;
   // grabbing the dot scrubs the path instead of dragging the land
@@ -742,7 +949,14 @@ addEventListener("pointermove", e => {
   if (e.pointerType !== "touch") uT = cl(e.clientX/W, .005, .995);
   parT = (e.clientX/W - .5)*-24;
   dotHot = e.pointerType !== "touch" && Math.hypot(...dotOff(e)) < 14;
-  if (down && e.pointerId === down.id && down.scrub != null){ const b = bar(); camT = clampCam((e.clientX - down.scrub - b.x0)/(b.x1 - b.x0)*CAMMAX); }
+  cDotHot = tripT && e.pointerType !== "touch" && Math.hypot(...cDotOff(e)) < 14;
+  if (down && down.city && e.pointerId === down.id && down.scrub != null) ccamT = clampC((e.clientX - down.scrub - W*.3)/(W*.4)*CMAXC);
+  else if (down && down.city && e.pointerId === down.id){
+    const dx = e.clientX - down.x, dy = e.clientY - down.y;
+    if (!dragMoved && Math.hypot(dx, dy) > 6){ dragMoved = true; document.body.classList.add("dragging"); }
+    if (dragMoved) ccamT = clampC(down.cam - (e.pointerType === "touch" && Math.abs(dy) > Math.abs(dx) ? dy : dx)/W);
+  }
+  else if (down && e.pointerId === down.id && down.scrub != null){ const b = bar(); camT = clampCam((e.clientX - down.scrub - b.x0)/(b.x1 - b.x0)*CAMMAX); }
   else if (down && e.pointerId === down.id){
     const dx = e.clientX - down.x, dy = e.clientY - down.y;
     if (!dragMoved && Math.hypot(dx,dy) > 6){ dragMoved = true; document.body.classList.add("dragging"); }
@@ -761,7 +975,7 @@ document.documentElement.addEventListener("pointerleave", () => ptr.in = false);
 addEventListener("click", e => { if (dragMoved){ e.preventDefault(); e.stopPropagation(); } }, true);
 cv.addEventListener("click", e => { if (!dragMoved) ravens.push(raven(e.clientX, e.clientY)); });
 
-document.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", () => { surface(); camT = JUMP[b.dataset.go]; }));
+document.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", () => { surface(); leaveCity(); camT = JUMP[b.dataset.go]; }));
 const home = document.getElementById("home"); home.addEventListener("click", () => camT = 0);
 const arrow = document.getElementById("arrow"); let arrowGone = false;
 arrow.addEventListener("click", () => { if (!dragMoved){ userMoved = true; camT = JUMP.work; } });
@@ -828,12 +1042,15 @@ function frame(now){
   const S = sky(e), time = now/1000;
   dive += cl(diveT - dive, -dt/850, dt/850); if (reduce) dive = diveT;
   const off = H*(dive < .5 ? 4*dive*dive*dive : 1 - Math.pow(2 - 2*dive, 3)/2);
+  if (toCity && dive === 0){ toCity = false; goCity(); }
+  trip += cl(tripT - trip, -dt/900, dt/900); if (reduce) trip = tripT;
+  const offX = W*(trip < .5 ? 4*trip*trip*trip : 1 - Math.pow(2 - 2*trip, 3)/2);
   const nightK = cl((.04 - e)/.26), lx = cl((u - .5)*2.4, -1, 1), litDust = mix(hx("#E9C49A"), [120,120,160], nightK*.7), darkDust = mix(hx("#A86A44"), [70,66,96], nightK*.7);
   if ((innerWidth !== W || innerHeight !== H || !layers.length) && now - lastFix > 250){ lastFix = now; resize(); }
 
-  // the desert, pushed up and out of the way while you're in the rockies
-  if (off < H){
-    ctx.save(); ctx.translate(0, -off);
+  // the desert, pushed up and out of the way in the rockies, off to the east in boston
+  if (off < H && offX < W){
+    ctx.save(); ctx.translate(offX, -off);
     drawSky(S, e, nightK, time);
     for (const LL of layers){
       try { drawLayer(LL, S, e, lx); }
@@ -898,12 +1115,81 @@ function frame(now){
   if (off > 0){
     ctx.save(); ctx.translate(0, H - off);
     drawSky(S, e, nightK, time);
-    try { drawRockies(dt); }
-    catch(err){ if (!drawFailed){ drawFailed = true; console.error(err); } rockies = []; }
+    try { drawScene(dt); }
+    catch(err){ if (!drawFailed){ drawFailed = true; console.error(err); } rcScene = null; }
     ctx.restore();
   }
-  world.style.transform = off ? `translate3d(0,${(-off).toFixed(1)}px,0)` : "";
+  // mid-swoop the coast reaches a little past the seam and fades out over the desert, so the two dissolve rather than butt
+  const blend = offX > 0 && offX < W && !reduce, ov = blend ? Math.min(W*.3, 380)*Math.sin(Math.PI*trip) : 0, cOX = offX - W + ov;
+  let mctx = null;
+  if (blend){ if (seamC.width !== W*D || seamC.height !== H*D){ seamC.width = W*D; seamC.height = H*D; } mctx = ctx; ctx = seamC.getContext("2d"); ctx.setTransform(D,0,0,D,0,0); ctx.clearRect(0, 0, W, H); }
+  if (offX > 0){
+    ccam += (ccamT - ccam)*(reduce ? 1 : 1 - Math.pow(.925, dt/16.7));
+    // the sun is yours, same as the desert; walking west only warms the light, it never moves the sun
+    const prog = ss(0, 1, cl(1 - ccam/CMAXC)), eC = e, SC = sky(e), nkC = nightK, lxC = lx;
+    cityE = eC; cityS = SC;
+    ctx.save(); ctx.translate(cOX, 0);
+    drawSky(SC, eC, nkC, time);
+    // evening coming on in the west as you go
+    if (prog > .01){ const wg = ctx.createLinearGradient(0, 0, W, 0); wg.addColorStop(0, `rgba(255,150,90,${(.24*prog).toFixed(3)})`); wg.addColorStop(.7, `rgba(255,190,140,${(.08*prog).toFixed(3)})`); wg.addColorStop(1, "rgba(255,190,140,0)"); ctx.fillStyle = wg; ctx.fillRect(0, 0, W, H*.72); }
+    drawSea(SC, eC, lxC, time);
+    for (const LL of clayers){
+      try { drawLayer(LL, SC, eC, lxC, ccam, COASTRGB); }
+      catch(err){ if (!drawFailed){ drawFailed = true; console.error(err); } clayers = []; }
+    }
+    // the resume, spread along the coast; titles stake down to the rock they stand over, like the desert's
+    for (const it of citems){
+      const x = (it.X*CS - ccam)*W + par*.6, y = it.sy*H, vis = x > -700 && x < W + 60;
+      it.el.classList.toggle("gone", !vis);
+      if (vis) it.el.style.transform = `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,0)`;
+      if (!vis || it.layer < 0 || !clayers.length) continue;
+      const ax = x + 2, ty = cLayerAt(it.layer, ax), bottom = y + it.lbh + 8;
+      const target = chot === it ? 1 : 0;
+      it.heat += (target - it.heat)*(1 - Math.pow(target > it.heat ? .88 : .95, dt/16.7));
+      if (ty != null && ty > bottom){
+        ctx.strokeStyle = css(inkState === "light" ? [246,235,221] : [35,22,18], .5 + .4*it.heat); ctx.lineWidth = 1 + it.heat*.5;
+        ctx.beginPath(); ctx.moveTo(ax, bottom); ctx.lineTo(ax, ty); ctx.stroke();
+        ctx.fillStyle = ctx.strokeStyle; ctx.fillRect(ax - 3, ty - .5, 6, 1);
+        // gulls lift off the rock where it stands
+        if (it.heat > .5 && !reduce && Math.random() < .02*it.heat) ravens.push(Object.assign(raven(ax + 10, ty - 6), {gull:1}));
+      }
+    }
+    // the path along the bottom: where you are
+    const lx0 = W*.3, lx1 = W*.7, ly = H - 30;
+    ctx.strokeStyle = "rgba(255,240,225,.35)"; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(lx0, ly); ctx.lineTo(lx1, ly); ctx.stroke();
+    ctx.fillStyle = "rgba(255,240,225,.5)"; for (const it of citems) ctx.fillRect(lx0 + cl((it.X*CS - .08)/CMAXC)*(lx1 - lx0) - .5, ly - 3, 1, 6);
+    const cScrub = down && down.city && down.scrub != null;
+    cDot += ((cScrub ? ccamT : ccam) - cDot)*(1 - Math.pow(.5, dt/16.7));
+    cDotR += ((cScrub || cDotHot ? 5.5 : 3.2) - cDotR)*k*2;
+    ctx.fillStyle = "rgba(255,246,236,.95)"; ctx.beginPath(); ctx.arc(lx0 + cl(cDot/CMAXC)*(lx1 - lx0), ly, cDotR, 0, Math.PI*2); ctx.fill();
+    ctx.restore();
+    if (mctx){
+      const fg = ctx.createLinearGradient(offX, 0, offX + ov, 0); fg.addColorStop(0, "#000"); fg.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.globalCompositeOperation = "destination-in"; ctx.fillStyle = fg; ctx.fillRect(0, 0, W, H); ctx.globalCompositeOperation = "source-over";
+      ctx = mctx; ctx.drawImage(seamC, 0, 0, W, H);
+    }
+  }
+  // where the coast meets the desert: a soft bank of haze riding the seam, so it's weather rather than a cut
+  if (offX > 0 && offX < W){
+    const sw = Math.min(W*.3, 380), hz = mix(S.hor, [255,248,238], .2), g = ctx.createLinearGradient(offX - sw, 0, offX + sw, 0);
+    g.addColorStop(0, css(hz, 0)); g.addColorStop(.3, css(hz, .35)); g.addColorStop(.5, css(hz, .62)); g.addColorStop(.7, css(hz, .35)); g.addColorStop(1, css(hz, 0));
+    ctx.fillStyle = g; ctx.fillRect(offX - sw, 0, sw*2, H);
+    // and a little dust caught in it, drifting with the wind
+    if (!reduce){ ctx.fillStyle = css(litDust, .7); for (let i = 0; i < 70; i++){ const dx = (hash(i*3 + 7) - .5)*sw*1.4, y = hash(i*3 + 8)*H; ctx.globalAlpha = (1 - Math.abs(dx)/(sw*.7))*.8; ctx.fillRect(offX + dx + Math.sin(time*2 + i)*6, y, 1.6, 1.6); } ctx.globalAlpha = 1; }
+  }
+  // wind streaks while you're carried across
+  if (trip > 0 && trip < 1 && !reduce){
+    const wk = Math.sin(Math.PI*trip);
+    ctx.strokeStyle = css(litDust, .55*wk); ctx.lineWidth = 1.2; ctx.beginPath();
+    for (let i=0;i<46;i++){
+      const y = hash(i*7 + 1)*H, len = (80 + hash(i*7 + 2)*240)*wk, x = ((hash(i*7 + 3)*W*1.6 + offX*(1.2 + hash(i*7 + 4))) % (W*1.6)) - W*.3;
+      ctx.moveTo(x, y); ctx.lineTo(x + len, y);
+    }
+    ctx.stroke();
+  }
+  world.style.transform = off || offX ? `translate3d(${offX.toFixed(1)}px,${(-off).toFixed(1)}px,0)` : "";
   deep.style.transform = `translate3d(0,${(H - off).toFixed(1)}px,0)`;
+  city.style.transform = `translate3d(${cOX.toFixed(1)}px,0,0)`;
 
   // fragments weathering
   if (fragHot && !reduce){
@@ -927,7 +1213,7 @@ function frame(now){
     r.vy += (-.6 - r.vy)*.02; r.x += r.vx*dt/16.7; r.y += r.vy*dt/16.7; r.s *= .9985;
     if (r.x < -60 || r.x > W + 60 || r.y < -60){ ravens.splice(i,1); continue; }
     const fl = Math.sin(r.t*11)*.9, sz = 9*r.s, dir = Math.sign(r.vx);
-    ctx.fillStyle = css(mix([24,18,18], [10,10,20], nightK), .92);
+    ctx.fillStyle = r.gull ? css(mix([250,248,244], [150,150,170], nightK), .95) : css(mix([24,18,18], [10,10,20], nightK), .92);
     ctx.save(); ctx.translate(r.x, r.y); ctx.scale(dir, 1);
     ctx.beginPath(); ctx.ellipse(0, 0, sz*.55, sz*.16, -.08, 0, Math.PI*2); ctx.fill();
     ctx.beginPath(); ctx.moveTo(sz*.5, -sz*.05); ctx.lineTo(sz*.78, -sz*.02); ctx.lineTo(sz*.5, sz*.08); ctx.fill();
@@ -948,12 +1234,16 @@ function frame(now){
 
 
   // ink follows the light
-  const want = e < .05 ? "light" : "dark";
+  const inCity = trip > .5 && cityE != null, eI = inCity ? cityE : e, SI = inCity ? cityS : S;
+  const want = eI < .05 ? "light" : "dark";
   if (want !== inkState){
     inkState = want;
-    document.documentElement.style.setProperty("--ink", want === "light" ? "#F6EBDD" : "#231612");
+    const rs = document.documentElement.style, nite = want === "light";
+    rs.setProperty("--ink", nite ? "#F6EBDD" : "#231612");
+    rs.setProperty("--sheet", nite ? "rgba(22,20,36,.88)" : "rgba(251,246,239,.9)"); rs.setProperty("--paper", nite ? "#16142A" : "#FBF6EF");
+    rs.setProperty("--rule", nite ? "rgba(246,235,221,.18)" : "rgba(35,22,18,.16)"); rs.setProperty("--tint", nite ? "rgba(246,235,221,.06)" : "rgba(35,22,18,.045)");
   }
-  if ((now|0) % 3 === 0) document.documentElement.style.setProperty("--halo", want === "light" ? "rgba(14,14,30,.55)" : css(mix(S.mid, [255,240,220], .3), .6));
+  if ((now|0) % 3 === 0) document.documentElement.style.setProperty("--halo", want === "light" ? "rgba(14,14,30,.55)" : css(mix(SI.mid, [255,240,220], .3), .6));
 
   // name shimmer
   const nr = items[0];
@@ -966,23 +1256,25 @@ function frame(now){
   }
 
   if (!arrowGone && userMoved && cam > .1) dismissArrow();
-  home.classList.toggle("on", cam > .4 && !diveT);
+  home.classList.toggle("on", cam > .4 && !diveT && !tripT);
   const near = Object.entries(JUMP).reduce((a,b) => Math.abs(b[1]-cam) < Math.abs(a[1]-cam) ? b : a);
-  navB.forEach(b => b.setAttribute("aria-current", cam > .3 && b.dataset.go === near[0] ? "true" : "false"));
+  navB.forEach(b => b.setAttribute("aria-current", cam > .3 && !tripT && b.dataset.go === near[0] ? "true" : "false"));
+  resumeB.setAttribute("aria-current", tripT ? "true" : "false");
 
   requestAnimationFrame(frame);
 }
 
 function resize(){
-  D = Math.min(devicePixelRatio || 1, 2);
+  // 1.5x is plenty for flat shapes and saves close to half the pixels on a 2x screen; the text is html and stays sharp
+  D = Math.min(devicePixelRatio || 1, 1.5);
   W = innerWidth; H = innerHeight; mob = W < 760; CS = mob ? 2.5 : 1;
   cv.width = W*D; cv.height = H*D; ctx.setTransform(D,0,0,D,0,0);
   grainPat = null;
-  CAMMAX = 4.85*CS - .08;
+  CAMMAX = 4.85*CS - .08; CMAXC = 5.6*CS - .08; ccamT = clampC(ccamT); ccam = clampC(ccam);
   for (const k in JX) JUMP[k] = Math.min(CAMMAX, JX[k]*CS + (k === "contact" ? 1 : 0)*99);
   JUMP.work = .92*CS - .4; JUMP.about = 2.42*CS - .1; JUMP.contact = CAMMAX;
   camT = clampCam(camT); cam = clampCam(cam);
-  bakeAll(); if (rockSeed >= 0) bakeRockies(rockSeed);
+  bakeAll(); if (rockSeed >= 0) bakeRockies(rockSeed); if (clayers.length) bakeCoast();
 }
 let rT; addEventListener("resize", () => { clearTimeout(rT); rT = setTimeout(resize, 200); });
 resize();
