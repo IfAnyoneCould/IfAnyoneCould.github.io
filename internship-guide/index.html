@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>3D Art Internship Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a 3D viewport. Neutral grey ground, X/Y/Z gizmo colors carry meaning (red = stretch, green = freshman OK, blue = later). One column of sections, directory is a filterable grid. */
+:root{
+  --bg:#e9ebee; --panel:#f7f8f9; --line:#cfd3d9; --fg:#1d2026; --muted:#5b616b;
+  --x:#c8323f; --y:#2f8a3c; --z:#2d62c8; --sel:#e8891a;
+  --display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#2a2c30; --panel:#33363b; --line:#474b52; --fg:#e7e9ec; --muted:#a2a8b1;
+  --x:#f06470; --y:#6fcf6a; --z:#6f9cf5; --sel:#ffa53d; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#2a2c30; --panel:#33363b; --line:#474b52; --fg:#e7e9ec; --muted:#a2a8b1;
+  --x:#f06470; --y:#6fcf6a; --z:#6f9cf5; --sel:#ffa53d; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:16px/1.55 var(--body);margin:0}
+.wrap{max-width:1080px;margin:0 auto;padding:40px 20px 80px;display:flex;flex-direction:column;gap:56px}
+a{color:var(--z);text-underline-offset:2px}
+a:focus-visible,button:focus-visible{outline:2px solid var(--sel);outline-offset:2px}
+h1,h2{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(28px,5vw,48px);font-weight:700;letter-spacing:-.01em}
+h2{font-size:22px;font-weight:500}
+.eyebrow{font:600 12px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+p{margin:0;max-width:68ch}
+section{display:flex;flex-direction:column;gap:18px}
+
+/* hero */
+header{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end}
+header .lead{font-size:18px;color:var(--muted);margin-top:14px}
+.gizmo{width:110px;height:110px}
+@media (max-width:620px){header{grid-template-columns:1fr}.gizmo{display:none}}
+
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;font:13px var(--mono);color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex:none}
+.d-yes{background:var(--y)} .d-stretch{background:var(--x)} .d-later{background:var(--z)}
+
+/* short version */
+.short{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.short div{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:16px 18px;min-width:0}
+.short b{display:block;font-family:var(--display);font-weight:500;font-size:15px;margin-bottom:6px}
+.short p{color:var(--muted);font-size:15px}
+
+/* timeline */
+.timeline{list-style:none;margin:0;padding:0;border-left:2px solid var(--line);display:flex;flex-direction:column;gap:14px}
+.timeline li{display:grid;grid-template-columns:150px 1fr;gap:14px;padding-left:18px;position:relative}
+.timeline li::before{content:"";position:absolute;left:-7px;top:6px;width:12px;height:12px;background:var(--bg);border:2px solid var(--sel);transform:rotate(45deg)}
+.timeline .date{font:600 13px/1.6 var(--mono);color:var(--sel);font-variant-numeric:tabular-nums}
+.timeline .ev{min-width:0}
+@media (max-width:560px){.timeline li{grid-template-columns:1fr;gap:2px}}
+
+/* filters */
+.filters{display:flex;flex-wrap:wrap;gap:8px}
+.filters button{font:500 14px var(--body);background:var(--panel);color:var(--fg);border:1px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.fgroup{display:flex;flex-direction:column;gap:8px}
+.count{font:13px var(--mono);color:var(--muted)}
+
+/* directory */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:16px 18px;display:flex;flex-direction:column;gap:10px;min-width:0;position:relative}
+.card .top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.card h3{margin:0;font:700 16px/1.3 var(--body)}
+.card .what{color:var(--muted);font-size:14.5px}
+.card dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:14px}
+.card dt{font:600 11px/1.9 var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.card dd{margin:0;min-width:0}
+.card .foot{margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;font-size:14px}
+.fit{font:600 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:3px;white-space:nowrap;border:1px solid currentColor}
+.fit.yes{color:var(--y)} .fit.stretch{color:var(--x)} .fit.later{color:var(--z)}
+.unv{font:11px var(--mono);color:var(--muted)}
+.card a{word-break:break-word}
+
+/* platforms */
+.plat{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:4px 28px}
+.plat div{padding:12px 0;border-bottom:1px solid var(--line);min-width:0}
+.plat b{font-weight:700}
+.plat p{color:var(--muted);font-size:14.5px;margin-top:2px}
+code{font:13px var(--mono);background:var(--panel);border:1px solid var(--line);padding:1px 5px;border-radius:3px}
+
+.tips{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:10px;max-width:72ch}
+details{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px 18px}
+summary{cursor:pointer;font-weight:600}
+details ul{margin:12px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:6px;color:var(--muted);font-size:14.5px}
+footer{color:var(--muted);font-size:13.5px;border-top:1px solid var(--line);padding-top:18px}
+@media (prefers-reduced-motion:no-preference){.card{transition:border-color .15s}.card:hover{border-color:var(--sel)}}
+.stray{background:var(--panel);border:1px dashed var(--line);border-radius:6px;padding:12px 16px;font-size:14.5px;color:var(--muted)}
+.stray b{color:var(--fg)}
+</style>
+
+<div class="wrap">
+<div class="stray"><b>Unlisted page.</b> If you got here by accident, this isn't part of the rest of the site. It's an internship list I put together for a friend studying 3D art at RIT, and it's only here so they can open it on their phone. <a href="/">Go to the main site</a>.</div>
+<header>
+  <div>
+    <div class="eyebrow">RIT · 3D Digital Design · Freshman year · Updated Sept 30, 2026</div>
+    <h1>Internships, gigs &amp; programs for a first-year 3D artist</h1>
+    <p class="lead">This list covers game studios, animation and VFX studios, and jobs outside those that use 3D art: toys, theme parks, museums and AR. It also covers contests, scholarships and ways to earn money from your art. Each entry is tagged by how realistic it is for you right now.</p>
+  </div>
+  <svg class="gizmo" viewBox="0 0 110 110" aria-hidden="true">
+    <line x1="45" y1="65" x2="100" y2="80" stroke="var(--x)" stroke-width="4" stroke-linecap="round"/>
+    <line x1="45" y1="65" x2="45" y2="8" stroke="var(--y)" stroke-width="4" stroke-linecap="round"/>
+    <line x1="45" y1="65" x2="8" y2="95" stroke="var(--z)" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="100" cy="80" r="7" fill="var(--x)"/><circle cx="45" cy="8" r="7" fill="var(--y)"/><circle cx="8" cy="95" r="7" fill="var(--z)"/>
+    <circle cx="45" cy="65" r="5" fill="var(--fg)"/>
+  </svg>
+</header>
+
+<div class="legend">
+  <span><i class="dot d-yes"></i>Freshman OK</span>
+  <span><i class="dot d-stretch"></i>Stretch: worth a shot</span>
+  <span><i class="dot d-later"></i>Later: bookmark for sophomore or junior year</span>
+  <span>“Unverified” means this year’s posting wasn’t found, so the dates are based on last year’s cycle</span>
+</div>
+
+<section>
+  <div class="eyebrow">The short version</div>
+  <div class="short">
+    <div><b>Watch the graduation-date filter</b><p>Most big game studio internships (Activision, Nintendo, Insomniac) require you to graduate between 2027 and 2028. They screen by graduation date, not class year, so for now read the eligibility line on every posting.</p></div>
+    <div><b>Some studios do take freshmen</b><p>DreamWorks and Walt Disney Animation take any enrolled student. Riot and Epic don’t list a class-year minimum. Hallmark, NASA and the Smithsonian take rising sophomores or younger students.</p></div>
+    <div><b>Creative Industry Days is the best first step</b><p>RIT runs free 1:1 portfolio reviews with industry artists on Jan 20–22, 2027. Sign up through Career Connect by searching “CID”.</p></div>
+    <div><b>Build your portfolio with credited work</b><p>Game jams, Rookies contests, MAGIC Spell Studios projects, Roblox UGC items and assets sold on Fab. All of these count, and they get you ready for sophomore-year applications.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Upcoming dates</div>
+  <h2>What’s coming up, in order</h2>
+  <ol class="timeline">
+    <li><span class="date">Oct 5–19, 2026</span><span class="ev"><b>DreamWorks</b> spring internship window. The program runs Jan–Apr and overlaps with classes, but it’s good practice for summer.</span></li>
+    <li><span class="date">Oct 30, 2026</span><span class="ev"><b>Roblox</b> Summer 2027 Product Design intern applications close. This is a UI/UX role that pays $58/hr.</span></li>
+    <li><span class="date">Nov 9, 2026</span><span class="ev"><b>Games for Change Student Challenge</b> portal opens.</span></li>
+    <li><span class="date">Nov 2026 – Jan 2027</span><span class="ev"><b>Wizards of the Coast</b> art internships are posted, but only for a short time. Mattel, Universal Creative and ESPN also post in this window.</span></li>
+    <li><span class="date">Dec 1, 2026</span><span class="ev"><b>Global Game Jam</b> registration opens. <b>Women in Animation scholarships</b> open.</span></li>
+    <li><span class="date">Jan 8, 2027</span><span class="ev"><b>Rookies × Autodesk Flow Studio</b> contest closes. The grand prize is $10k.</span></li>
+    <li><span class="date">Jan 20–22, 2027</span><span class="ev"><b>RIT Creative Industry Days</b> portfolio reviews, with career panels on Jan 19–20.</span></li>
+    <li><span class="date">Jan 25–31, 2027</span><span class="ev"><b>Global Game Jam</b> weekend.</span></li>
+    <li><span class="date">~Feb 2027</span><span class="ev"><b>Funko</b> Sculptor Intern posting (on Handshake last year). Hallmark applications close. Pixar PUP deadline is around Feb 1 (for next year).</span></li>
+    <li><span class="date">Feb 24, 2027</span><span class="ev"><b>RIT University-Wide Career Fair</b>, 10am–4pm, Gordon Field House.</span></li>
+    <li><span class="date">Feb 28, 2027</span><span class="ev"><b>Women in Animation</b> scholarship deadline.</span></li>
+    <li><span class="date">Mar 1, 2027</span><span class="ev"><b>NASA</b> summer internship deadline. <b>GDC</b> runs Mar 1–5 in San Francisco (crew spots and scholarships).</span></li>
+    <li><span class="date">~Mar 2027</span><span class="ev"><b>DreamWorks summer</b> window (only 1–2 weeks) and <b>LAIKA</b> summer applications.</span></li>
+    <li><span class="date">Aug 8–12, 2027</span><span class="ev"><b>SIGGRAPH</b> in Anaheim. Student volunteer applications usually open in winter.</span></li>
+  </ol>
+</section>
+
+<section>
+  <div class="eyebrow">Directory</div>
+  <h2>Every opportunity, filterable</h2>
+  <div class="fgroup">
+    <div class="filters" id="catFilters"></div>
+    <div class="filters" id="fitFilters"></div>
+    <div class="count" id="count"></div>
+  </div>
+  <div class="grid" id="grid"></div>
+</section>
+
+<section>
+  <div class="eyebrow">Where to look</div>
+  <h2>How to search each platform</h2>
+  <div class="plat">
+    <div><b>Handshake</b> (through RIT)<p>Filter to Internship and your major, and turn on Remote. Search <code>3D</code>, <code>sculpt</code>, <code>environment</code> and <code>themed entertainment</code>. Save the searches with alerts. Activision, Funko and Wizards have all posted there.</p></div>
+    <div><b>RIT Career Connect</b><p>Handles co-op listings and the Creative Industry Days sign-up.</p></div>
+    <div><b>LinkedIn</b><p>Search <code>3D artist intern</code>, <code>game art intern</code>, <code>sculptor intern</code> and <code>Summer 2027 design intern</code>. Set Experience to Internship and Date to Past week. Follow the companies on this page.</p></div>
+    <div><b>ArtStation Jobs</b><p>Filter to Internship and Remote. Indie and outsourcing studios such as Leartes post here. Keep your ArtStation profile public and up to date.</p></div>
+    <div><b>Hitmarker</b><p>Filter Experience to Internship and Field to Art/Animation. It’s the biggest board for game jobs.</p></div>
+    <div><b>GameJobs.co</b><p>Search <code>intern 2027</code>. It currently lists Activision, EA, Epic and Roblox internships.</p></div>
+    <div><b>Work With Indies</b><p>For indie studios. Search “intern”. Postings close fast.</p></div>
+    <div><b>RippleMatch / WayUp / Simplify</b><p>Mattel recruits mainly through RippleMatch. WayUp has NBCU and Falcon’s. Simplify has a handy autofill extension.</p></div>
+    <div><b>Indeed / Glassdoor / ZipRecruiter</b><p>These carry a lot of stale reposts, so always open the company’s own careers page before applying.</p></div>
+    <div><b>Wellfound</b><p>Search <code>3D</code> plus Internship for AR/VR and game startups.</p></div>
+    <div><b>Motionographer / School of Motion</b><p>For motion design and C4D work at studios like Buck, Psyop and Giant Ant.</p></div>
+    <div><b>HollyList / ShowbizJobs / ThemedEntertainmentJobs</b><p>For theme parks and media: Universal, Falcon’s, Meow Wolf.</p></div>
+    <div><b>AWN / Cartoon Brew / Animation Magazine</b><p>Mostly senior jobs, but they post mentorships and programs.</p></div>
+    <div><b>The Rookies</b><p>Monthly challenges and the spring Rookie Awards. Recruiters watch them.</p></div>
+    <div><b>Reddit</b><p>Use r/gameDevClassifieds for paid work and portfolio posts, and r/INAT for jam teams and collaborations. Also r/3Dmodeling and r/vfx. Be careful with “rev-share” offers.</p></div>
+    <div><b>Discord / Bluesky / X</b><p>Follow <code>#gamedevjobs</code>. Game Dev League and Brackeys servers have job and collab channels.</p></div>
+    <div><b>itch.io jams</b><p>See itch.io/jams/upcoming. Every jam is a portfolio piece with a team credit.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Portfolio</div>
+  <h2>What studios want to see</h2>
+  <ol class="tips">
+    <li><b>An ArtStation portfolio</b> with 8–15 of your best pieces, not everything you’ve made. Group it by discipline: 3D props and environments, characters, 2D concept.</li>
+    <li><b>Breakdowns for 3D work</b>: turntables, wireframes, texture maps, and Marmoset or Unreal renders. Riot’s guide says class work, jam work and fan art are fine as long as they’re yours.</li>
+    <li><b>Show fundamentals for 2D and vis dev</b>: perspective, composition, color and lighting. DreamWorks names these directly.</li>
+    <li><b>A 60–90 second reel</b>, only if you’re applying for animation, VFX or tech art. Put your strongest work first and your name on screen.</li>
+    <li><b>A PDF version</b> of the portfolio, because some applications (such as WB) ask for one.</li>
+  </ol>
+</section>
+
+<details>
+  <summary>Checked and ruled out, so you don’t have to</summary>
+  <ul>
+    <li>Naughty Dog, Valve and Bungie don’t have art internships right now (Bungie has had none since 2023). Naughty Dog hires interns through Sony/PlayStation.</li>
+    <li>Walt Disney Imagineering internships usually require junior year or above. The Disney Imaginations competition is the realistic route in for now.</li>
+    <li>The Unreal Fellowship requires 3+ years of professional experience.</li>
+    <li>Limit Break Mentorship is UK and Ireland only.</li>
+    <li>Microsoft Explore is a CS and product rotation, not an art path.</li>
+    <li>Women in Animation mentorship circles are for final-year students and working professionals, but their scholarships are open to you.</li>
+    <li>NICKternship is juniors and up. Framestore Launchpad is final-year students only. NFL Films 3D motion is grad students only.</li>
+    <li>Penguin Random House’s art internship requires full-time availability by June 2028 and closes Oct 2, 2026.</li>
+    <li>The Funcom and Table Knight internships are closed. AMNH MEEP is for NYC residents only.</li>
+    <li>The IGDA Next Gen Leaders and Velocity programs are for mid-career professionals.</li>
+  </ul>
+</details>
+
+<footer>Researched Sept 30, 2026, from official career pages and job aggregators. Pay figures and dates marked “unverified” come from last year’s cycle or third-party sites, so always confirm on the company’s own posting before applying.</footer>
+</div>
+
+<script>
+const D=[
+// studios
+{c:"Studios",n:"DreamWorks Animation internships",w:"Visual development, story, art, CG and production tracks. Three cycles a year.",who:"Any associate, bachelor’s or grad student. No class-year minimum.",when:"Spring window Oct 5–19, 2026. Summer window ~March 2027, open 1–2 weeks.",pay:"~$17.87/hr",loc:"Glendale CA, hybrid or remote by department",u:"https://www.dreamworks.com/careers/early-careers",f:"yes"},
+{c:"Studios",n:"Walt Disney Animation Studios",w:"10–12 week internships in production, technology and studio tracks.",who:"Enrolled in any post-secondary program, 18+.",when:"Summer postings go up on Disney Careers in fall and winter.",pay:"Paid",loc:"Burbank CA",u:"https://disneyanimation.com/talent-development/internships/",f:"yes",unv:1},
+{c:"Studios",n:"Riot Games summer internships",w:"Concept, character, environment, tech art, UI/UX, VFX and visual design.",who:"Enrolled in college. No class year listed.",when:"Opens ~September. Art roles stay open to ~January.",pay:"A past art role paid $39/hr",loc:"Remote plus 1 week at LA headquarters",u:"https://www.riotgames.com/en/work-with-us/jobs",f:"stretch",unv:1},
+{c:"Studios",n:"Epic Games early careers",w:"Roles like Tech Art Intern (Rocket League).",who:"Students, or grads within 1 year.",when:"Rolling, ~Sept–March.",pay:"Paid",loc:"Cary NC and other sites",u:"https://www.epicgames.com/site/earlycareers",f:"stretch",unv:1},
+{c:"Studios",n:"Titmouse artistic internship",w:"Storyboard, design and animation.",who:"Students who can receive academic credit.",when:"Spring, summer and fall cycles.",pay:"Unpaid, for credit",loc:"LA, NY, Vancouver",u:"https://www.titmouse.net",f:"yes",unv:1},
+{c:"Studios",n:"Keyo Tech: Game Artist Intern (Pixel Art)",w:"Remote pixel-art role with flexible hours.",who:"College students. Listed on ASU’s board, so check whether outside students can apply.",when:"Open now, through Dec 31, 2026.",pay:"$16–19/hr",loc:"Remote",u:"https://career.eoss.asu.edu/jobs/keyo-tech-llc-game-artist-intern-pixel-art/",f:"yes"},
+{c:"Studios",n:"Leartes Studios 3D / Stylized / Level Artist Intern",w:"Remote freelance intern team at a game-art outsourcing studio.",who:"Class year not stated.",when:"Check ArtStation. Status unconfirmed.",pay:"Freelance",loc:"Remote",u:"https://leartesstudios.com/career",f:"yes",unv:1},
+{c:"Studios",n:"Activision / Blizzard Summer 2027",w:"Environment art (Infinity Ward), tech art (Mocap, Raven), character and concept art.",who:"Must graduate May 2027 – June 2028.",when:"Opened Sept 16. Environment Art closes Dec 5, 2026.",pay:"$20–50/hr plus relocation",loc:"On-site: CA, WI",u:"https://careers.activision.com/early-careers",f:"later"},
+{c:"Studios",n:"Pixar Undergraduate Program (PUP)",w:"Art, technical direction and related tracks.",who:"Sophomores and juniors.",when:"Deadline ~Feb 1.",pay:"Paid",loc:"Emeryville CA",u:"https://www.pixar.com/internships",f:"later"},
+{c:"Studios",n:"EA",w:"VFX, brand design and game design roles for Summer 2027.",who:"Graduating Dec 2027 or later, with at least one term left after the internship.",when:"Deadline ~November.",pay:"$19–29/hr (CA)",loc:"Various",u:"https://jobs.ea.com",f:"later",unv:1},
+{c:"Studios",n:"Insomniac / PlayStation",w:"Environment, character, concept and UI art.",who:"Last cycle required graduation by Spring 2027.",when:"Fall–winter.",pay:"$33–40/hr",loc:"Burbank CA",u:"https://careers.playstation.com",f:"later",unv:1},
+{c:"Studios",n:"Nintendo of America",w:"Mostly marketing and UX, with few art roles.",who:"Graduating 2027–28, 3.0 GPA.",when:"~Oct – Dec 1.",pay:"$25–40/hr",loc:"Redmond WA",u:"https://careers.nintendo.com",f:"later",unv:1},
+{c:"Studios",n:"Sony Pictures Imageworks iCAD",w:"8-week summer internship.",who:"3rd-year students.",when:"2027 dates not announced.",pay:"Paid",loc:"LA, Vancouver, Montreal",u:"https://www.imageworks.com/icad/internships",f:"later",unv:1},
+{c:"Studios",n:"ILM / Lucasfilm Jedi Academy",w:"VFX, art and animation, 12 weeks to 6 months.",who:"Students and recent grads, many roles for graduating students.",when:"Opened in January last cycle.",pay:"Paid",loc:"Various",u:"https://www.ilm.com/join-the-jedi-academy/",f:"later",unv:1},
+{c:"Studios",n:"LAIKA",w:"Stop-motion, fabrication, vis dev and story.",who:"Students.",when:"~March 2027 (Mar 2–27 last year).",pay:"Paid",loc:"Portland OR",u:"https://www.laika.com/careers/",f:"stretch",unv:1},
+{c:"Studios",n:"Netflix Animation",w:"Art trainee and intern roles.",who:"Varies.",when:"Rolling, ~Aug–March.",pay:"Paid",loc:"Various",u:"https://jobs.netflix.com",f:"later",unv:1},
+{c:"Studios",n:"Warner Bros. Animation / Cartoon Network",w:"Art intern roles: design, background layout, board revisions.",who:"Students.",when:"Fall–spring.",pay:"Paid",loc:"Burbank CA",u:"https://careers.wbd.com",f:"later",unv:1},
+{c:"Studios",n:"Nickelodeon NICKternship",w:"Animation production and development.",who:"Juniors, seniors and grad students.",when:"~Nov – early Dec.",pay:"$20/hr",loc:"Burbank CA",u:"https://www.nickanimation.com/community-efforts/mentorship-programs/",f:"later",unv:1},
+{c:"Studios",n:"Zynga",w:"Tech art and UI art interns.",who:"Upperclassmen.",when:"Rolling.",pay:"Paid",loc:"Various",u:"https://www.zynga.com/jobs/university/",f:"later"},
+// RIT
+{c:"RIT & Rochester",n:"RIT Creative Industry Days",w:"15-minute 1:1 portfolio reviews with industry artists. 45 companies and 808 reviews in 2026.",who:"RIT students.",when:"Panels Jan 19–20, reviews Jan 20–22, 2027. Sign up in Career Connect (search “CID”).",pay:"Free",loc:"On campus or virtual",u:"https://www.rit.edu/careerservices/creative-industry-days/student-information",f:"yes"},
+{c:"RIT & Rochester",n:"MAGIC Spell Studios / Overshoot Animation",w:"Paid student teams on contract work. Overshoot is MAGIC’s in-house animation team. The Co-Up program pays students to work on their own ventures.",who:"RIT students.",when:"No public application. Email MAGIC or ask Career Services.",pay:"Paid",loc:"RIT campus",u:"https://www.rit.edu/magic/work-us",f:"yes"},
+{c:"RIT & Rochester",n:"3D Digital Design co-op",w:"Co-op is encouraged, not required. Full-time, part-time or for-credit options.",who:"3DDD students.",when:"Anytime. Contact Career Services (Gretchen Eshleman).",pay:"Avg. $22.46/hr",loc:"Varies",u:"https://www.rit.edu/careerservices/study/3d-digital-design-bfa/co-op",f:"yes"},
+{c:"RIT & Rochester",n:"RIT spring career fair",w:"University-wide career fair.",who:"RIT students.",when:"Wed Feb 24, 2027, 10am–4pm, Gordon Field House.",pay:"n/a",loc:"RIT campus",u:"https://www.rit.edu/careerservices/university-wide-career-fair",f:"yes"},
+{c:"RIT & Rochester",n:"Rochester game studios",w:"Cold-email for summer or part-time art help: Workinman Interactive (kids’ games, co-founded by RIT faculty), Second Avenue Learning, Darkwind Media, BrokenMyth Studios.",who:"Whoever they’ll take.",when:"Anytime.",pay:"Varies",loc:"Rochester NY",u:"https://rocgamedev.com/resources/",f:"yes"},
+// adjacent
+{c:"Toys, parks & more",n:"Hallmark Creative Summer Internship",w:"Past roles included 3D Design & Illustration: concept, character and digital modeling.",who:"Rising sophomores and up, so a freshman fits for summer 2027. 3.0 GPA preferred.",when:"Opens mid-Sept, closes ~Feb/Mar 2027.",pay:"~$24/hr",loc:"Kansas City MO",u:"https://careers.hallmark.com",f:"yes",unv:1},
+{c:"Toys, parks & more",n:"Funko Sculptor Intern",w:"3D character sculpting, ZBrush preferred.",who:"3D art, animation or game art students. No class year listed.",when:"Posted on Handshake ~Feb 2026, so expect a similar post in Feb 2027.",pay:"$20–25/hr, ~20 hr/wk",loc:"Burbank CA or Everett WA",u:"https://funko.com/careers-pages/careers-landing.html",f:"stretch",unv:1},
+{c:"Toys, parks & more",n:"Universal Creative",w:"Digital 3D Media (Themed Entertainment) and Interactives Design interns.",who:"Animation, gaming or VFX majors preferred.",when:"Summer roles post in the fall before, so watch now.",pay:"Paid",loc:"Orlando FL",u:"https://jobs.universalparks.com/universal-creative/",f:"stretch"},
+{c:"Toys, parks & more",n:"LEGO Design internships",w:"Concept & model design, building experience and interaction design. 4-month placements.",who:"Students.",when:"2027 intake posts after the summer break (around now).",pay:"Paid",loc:"Billund, Denmark",u:"https://www.lego.com/en-us/careers/design",f:"stretch"},
+{c:"Toys, parks & more",n:"Meow Wolf",w:"Past roles: exhibition art and scenic, visual and artistic development.",who:"Students.",when:"Check the careers page.",pay:"~$18/hr",loc:"NV, NM and other sites",u:"https://faq.meowwolf.com/what-about-internships",f:"stretch",unv:1},
+{c:"Toys, parks & more",n:"Falcon’s Creative Group",w:"Past roles: media intern (CG/3D production), graphic design intern.",who:"Students.",when:"Check the careers page.",pay:"Paid",loc:"Orlando FL",u:"https://falconscreativegroup.com/careers/",f:"stretch",unv:1},
+{c:"Toys, parks & more",n:"Mattel",w:"Design interns, e.g. Hot Wheels.",who:"Portfolio required. Very competitive.",when:"Oct 2026 – Jan 2027, mainly through RippleMatch.",pay:"Paid",loc:"El Segundo CA",u:"https://jobs.mattel.com",f:"stretch"},
+{c:"Toys, parks & more",n:"Spin Master",w:"Plush design (GUND) and product design interns.",who:"Not stated.",when:"Check now.",pay:"Paid",loc:"NYC / Toronto",u:"https://www.spinmastercareers.com",f:"stretch",unv:1},
+{c:"Toys, parks & more",n:"Hasbro Digital Visual Design (Sculptor)",w:"Hard-surface and organic sculpts, PBR renders.",who:"Asks for 1–2 years of sculpting experience. Prefers final-year students.",when:"Rolling, Oct–Mar.",pay:"$26–32/hr",loc:"Pawtucket RI",u:"https://jobs.hasbro.com/en-us",f:"later"},
+{c:"Toys, parks & more",n:"Wizards of the Coast",w:"Concept artist and D&D graphic design interns.",who:"Enrolled, with at least one term left after summer.",when:"Posts Nov–Jan, briefly.",pay:"$29–33/hr (past)",loc:"Renton WA",u:"https://company.wizards.com/en/careers",f:"stretch"},
+{c:"Toys, parks & more",n:"Roblox Product Design Intern",w:"UX, UI and prototyping, not 3D art.",who:"Any degree-seeking design student.",when:"Closes Oct 30, 2026.",pay:"$58/hr",loc:"San Mateo CA",u:"https://careers.roblox.com/jobs/8143984",f:"stretch"},
+{c:"Toys, parks & more",n:"NASA OSTEM internships",w:"Non-STEM majors accepted. Look for multimedia, visualization and communications projects.",who:"US citizen, 16+, 3.0 GPA.",when:"Summer 2027 deadline ~Mar 1, 2027.",pay:"Stipend",loc:"Onsite, some virtual",u:"https://stemgateway.nasa.gov/public/s/explore-opportunities",f:"yes"},
+{c:"Toys, parks & more",n:"Smithsonian 3D Digitization",w:"3D scanning, AR and VR with museum collections.",who:"Students at any level.",when:"Rolling. Email OCIO-DPO@si.edu first.",pay:"Varies",loc:"DC, some remote",u:"https://3d.si.edu/internships",f:"yes"},
+{c:"Toys, parks & more",n:"ESPN graphics",w:"Design and graphics production.",who:"Students.",when:"~Nov – early Dec 2026.",pay:"Paid",loc:"CT / NY",u:"https://jobs.disneycareers.com/espn",f:"later",unv:1},
+// programs
+{c:"Contests & events",n:"Rookies × Autodesk Flow Studio contest",w:"A 10–30s shot of a CG character interacting with live-action footage.",who:"18+, US, currently enrolled.",when:"Closes Jan 8, 2027.",pay:"$10k grand prize plus laptop and software",loc:"Online",u:"https://www.therookies.co/contests/groups/autodesk-flow-studio",f:"yes"},
+{c:"Contests & events",n:"Rookies challenges & Rookie Awards",w:"Monthly art challenges and the big spring awards. Recruiters watch them.",who:"Students and self-taught artists.",when:"Monthly. Awards ~Apr–Jun.",pay:"Prizes",loc:"Online",u:"https://www.therookies.co/contests",f:"yes"},
+{c:"Contests & events",n:"Global Game Jam 2027",w:"48-hour jam where you join a team as the 3D artist.",who:"Anyone.",when:"Registration opens Dec 1. Jam Jan 25–31, 2027.",pay:"No",loc:"Local sites / online",u:"https://globalgamejam.org/",f:"yes"},
+{c:"Contests & events",n:"Games for Change Student Challenge",w:"Make an impact game. Expert Division is for ages 18–25.",who:"18–25.",when:"Portal opens Nov 9, 2026.",pay:"Prizes and scholarships",loc:"Online",u:"https://gamesforchange.org/studentchallenge/",f:"yes"},
+{c:"Contests & events",n:"Disney Imaginations",w:"Team design competition. Many entrants go on to Imagineering internships.",who:"University students.",when:"Check the site.",pay:"Prizes",loc:"Online",u:"https://disneyimaginations.com/",f:"yes"},
+{c:"Contests & events",n:"SIGGRAPH Student Volunteers",w:"Work the conference and network with Pixar, ILM and DreamWorks artists.",who:"Full-time students, 18+.",when:"Applications usually open in winter. Conference Aug 8–12, 2027.",pay:"Free pass",loc:"Anaheim CA",u:"https://sv.siggraph.org",f:"yes",unv:1},
+{c:"Contests & events",n:"GDC Festival Crew",w:"~25 hours of crew work in exchange for a pass.",who:"US work authorization.",when:"GDC Mar 1–5, 2027.",pay:"Paid plus pass",loc:"San Francisco",u:"https://www.calounge.com/application.php",f:"yes"},
+{c:"Contests & events",n:"Autodesk Student Ambassador",w:"Campus ambassador role. RIT has had ambassadors before.",who:"Post-secondary students, 18+.",when:"Cohort timing unclear.",pay:"Perks",loc:"Campus / virtual",u:"https://www.instructables.com/autodeskambassador/",f:"yes",unv:1},
+// scholarships
+{c:"Scholarships",n:"Women in Animation Scholarship",w:"Covers animation, games and VFX. Sponsor awards reported from Disney Animation ($12k), Foundry and LAIKA.",who:"Check the eligibility details.",when:"Opens Dec 1, 2026. Due Feb 28, 2027.",pay:"Up to $12k",loc:"n/a",u:"https://wearewia.org/scholarship/",f:"yes"},
+{c:"Scholarships",n:"GDC scholarships",w:"70+ partner orgs, each with its own application: IGDA Foundation, Game Devs of Color, WIGI, Latinx in Gaming, Girls Make Games and more.",who:"Varies by org.",when:"Winter, before GDC.",pay:"GDC pass",loc:"San Francisco",u:"https://gdconf.com/scholarships/",f:"yes"},
+{c:"Scholarships",n:"IGDA Foundation Questline Scholars",w:"GDC scholarship cohort.",who:"Current students and recent grads.",when:"2027 dates not announced.",pay:"GDC pass",loc:"San Francisco",u:"https://www.igdafoundation.org/questline/gdc",f:"yes",unv:1},
+{c:"Scholarships",n:"Epic MegaGrants",w:"Funding for Unreal or UEFN projects.",who:"Students are eligible. Realistic only with a real project.",when:"2026 deadline was Mar 20.",pay:"Grant",loc:"n/a",u:"https://www.unrealengine.com/megagrants",f:"stretch",unv:1},
+{c:"Scholarships",n:"Adobe Design Circle",w:"Up to $25k/yr for 4 years, but it focuses on UX, UI and product design.",who:"Any undergrad year.",when:"~Mar 2027.",pay:"$25k/yr",loc:"n/a",u:"https://www.adobe.com",f:"stretch",unv:1},
+// freelance
+{c:"Earn from your art",n:"Fab marketplace (Epic)",w:"Sell 3D assets. Fab replaced the Sketchfab Store, ArtStation Marketplace and Quixel.",who:"Anyone.",when:"Anytime.",pay:"88% creator share",loc:"Online",u:"https://www.fab.com/o/become-a-publisher",f:"yes"},
+{c:"Earn from your art",n:"Roblox UGC",w:"Stylized 3D accessories and clothing. Accessories have a 750 Robux publish fee and tri/texture limits.",who:"13+ with ID verification. No waitlist anymore.",when:"Anytime.",pay:"Sales revenue",loc:"Online",u:"https://create.roblox.com/",f:"yes"},
+{c:"Earn from your art",n:"Fortnite / UEFN creator payouts",w:"Build islands in Unreal Editor for Fortnite and earn engagement payouts.",who:"18+, account at least 90 days old.",when:"Anytime.",pay:"Payouts, $100 minimum",loc:"Online",u:"https://dev.epicgames.com/documentation/fortnite/engagement-payout-in-fortnite-creative",f:"yes"},
+{c:"Earn from your art",n:"CGTrader / TurboSquid / Fiverr / Upwork",w:"Sell models or take commissions. Useful searches: “stylized props”, “3D modeling”, “VRChat avatar”.",who:"Anyone.",when:"Anytime.",pay:"Per sale or gig",loc:"Online",u:"https://www.cgtrader.com",f:"yes"},
+{c:"Earn from your art",n:"VRChat avatar commissions",w:"Custom avatars, sold through Booth, Jinxxy or Gumroad.",who:"Anyone.",when:"Anytime.",pay:"Per commission",loc:"Online",u:"https://booth.pm",f:"yes"},
+{c:"Earn from your art",n:"Minecraft Marketplace Partner",w:"Sell Bedrock packs. Requires a registered business and 3 finished packs.",who:"Registered business entity.",when:"Later.",pay:"70% share",loc:"Online",u:"https://www.minecraft.net/en-us/partner",f:"later"}
+];
+const FITS={all:"Any fit",yes:"Freshman OK",stretch:"Stretch",later:"Later"};
+const CATS=["All",...new Set(D.map(d=>d.c))];
+let cat="All",fit="all";
+const esc=s=>String(s).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+function btns(el,opts,cur,set){
+  el.innerHTML="";
+  opts.forEach(([k,label])=>{const b=document.createElement("button");b.type="button";b.textContent=label;b.setAttribute("aria-pressed",k===cur);b.onclick=()=>{set(k);render()};el.appendChild(b)});
+}
+function render(){
+  btns(document.getElementById("catFilters"),CATS.map(c=>[c,c]),cat,v=>cat=v);
+  btns(document.getElementById("fitFilters"),Object.entries(FITS),fit,v=>fit=v);
+  const order={yes:0,stretch:1,later:2};
+  const rows=D.filter(d=>(cat==="All"||d.c===cat)&&(fit==="all"||d.f===fit)).sort((a,b)=>order[a.f]-order[b.f]);
+  document.getElementById("count").textContent=rows.length+" of "+D.length+" shown";
+  document.getElementById("grid").innerHTML=rows.map(d=>`<article class="card">
+    <div class="top"><h3>${esc(d.n)}</h3><span class="fit ${d.f}">${FITS[d.f]}</span></div>
+    <p class="what">${esc(d.w)}</p>
+    <dl><dt>Who</dt><dd>${esc(d.who)}</dd><dt>When</dt><dd>${esc(d.when)}</dd><dt>Pay</dt><dd>${esc(d.pay)}</dd><dt>Where</dt><dd>${esc(d.loc)}</dd></dl>
+    <div class="foot"><a href="${esc(d.u)}" target="_blank" rel="noopener">${esc(new URL(d.u).hostname.replace(/^www\./,""))} ↗</a>${d.unv?'<span class="unv">unverified</span>':''}</div>
+  </article>`).join("");
+}
+render();
+</script>
+
+</html>
